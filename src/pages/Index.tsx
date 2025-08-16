@@ -10,8 +10,7 @@ import { TotalCostCalculator } from "@/components/TotalCostCalculator";
 import { GovernmentBenefitsFinder } from "@/components/GovernmentBenefitsFinder";
 import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
-import { APIKeyManager } from "@/components/APIKeyManager";
-import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, Database, BarChart3 } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3 } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 
 const Index = () => {
@@ -100,8 +99,7 @@ const Index = () => {
               { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator },
               { id: "benefits-finder", label: "Benefits Finder", icon: Gift },
               { id: "comparison", label: "City Comparison", icon: MapPin },
-              { id: "regional", label: "Regional Overview", icon: TrendingUp },
-              { id: "api-config", label: "API Configuration", icon: Database }
+              { id: "regional", label: "Regional Overview", icon: TrendingUp }
             ].map(({ id, label, icon: Icon }) => (
               <Button
                 key={id}
@@ -128,7 +126,6 @@ const Index = () => {
           {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
           {activeSection === "comparison" && <CostComparisonTool />}
           {activeSection === "regional" && <RegionalOverview />}
-          {activeSection === "api-config" && <APIKeyManager />}
         </div>
       </section>
 
