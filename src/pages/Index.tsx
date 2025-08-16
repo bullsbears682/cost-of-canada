@@ -12,7 +12,7 @@ import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
 import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3 } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
-import logo from "@/assets/logo-new.png";
+import logo from "@/assets/logo-handmade.png";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
