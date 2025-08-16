@@ -4,11 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CostComparisonTool } from "@/components/CostComparisonTool";
 import { RegionalOverview } from "@/components/RegionalOverview";
 import { AffordabilityCalculator } from "@/components/AffordabilityCalculator";
-import { MapPin, Calculator, TrendingUp, Home, Flag } from "lucide-react";
+import { HousingAffordabilityAnalyzer } from "@/components/HousingAffordabilityAnalyzer";
+import { UtilityCostOptimizer } from "@/components/UtilityCostOptimizer";
+import { TotalCostCalculator } from "@/components/TotalCostCalculator";
+import { GovernmentBenefitsFinder } from "@/components/GovernmentBenefitsFinder";
+import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState("comparison");
+  const [activeSection, setActiveSection] = useState("housing-analyzer");
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -31,13 +35,13 @@ const Index = () => {
               Make informed decisions with government-grade data and insights.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="shadow-button-custom">
+              <Button size="lg" variant="secondary" className="shadow-button-custom" onClick={() => setActiveSection("housing-analyzer")}>
                 <Calculator className="h-5 w-5 mr-2" />
-                Start Cost Analysis
+                Start Housing Analysis
               </Button>
-              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                <MapPin className="h-5 w-5 mr-2" />
-                Explore Regions
+              <Button size="lg" variant="outline" className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" onClick={() => setActiveSection("benefits-finder")}>
+                <Gift className="h-5 w-5 mr-2" />
+                Find Benefits
               </Button>
             </div>
           </div>
@@ -71,10 +75,10 @@ const Index = () => {
             <Card className="text-center shadow-card-custom border-0">
               <CardHeader>
                 <div className="mx-auto mb-4 w-16 h-16 bg-canada-red rounded-full flex items-center justify-center">
-                  <MapPin className="h-8 w-8 text-white" />
+                  <Gift className="h-8 w-8 text-white" />
                 </div>
-                <CardTitle className="text-2xl">100+ Cities</CardTitle>
-                <CardDescription>Comprehensive coverage from Vancouver to St. John's</CardDescription>
+                <CardTitle className="text-2xl">Government Integration</CardTitle>
+                <CardDescription>Official data sources and benefits finder with application links</CardDescription>
               </CardHeader>
             </Card>
           </div>
@@ -86,15 +90,19 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             {[
-              { id: "comparison", label: "Cost Comparison", icon: Calculator },
-              { id: "regional", label: "Regional Overview", icon: MapPin },
-              { id: "affordability", label: "Affordability Calculator", icon: Home }
+              { id: "housing-analyzer", label: "Housing Affordability Analyzer", icon: Home },
+              { id: "utility-optimizer", label: "Utility Cost Optimizer", icon: Zap },
+              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator },
+              { id: "benefits-finder", label: "Government Benefits Finder", icon: Gift },
+              { id: "comparison", label: "City Comparison", icon: MapPin },
+              { id: "regional", label: "Regional Overview", icon: TrendingUp },
+              { id: "salary-calculator", label: "Salary Calculator", icon: DollarSign }
             ].map(({ id, label, icon: Icon }) => (
               <Button
                 key={id}
                 variant={activeSection === id ? "default" : "outline"}
                 onClick={() => setActiveSection(id)}
-                className="shadow-card-custom"
+                className="shadow-card-custom text-sm"
               >
                 <Icon className="h-4 w-4 mr-2" />
                 {label}
@@ -107,9 +115,13 @@ const Index = () => {
       {/* Dynamic Content Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
+          {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
+          {activeSection === "utility-optimizer" && <UtilityCostOptimizer />}
+          {activeSection === "total-calculator" && <TotalCostCalculator />}
+          {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
           {activeSection === "comparison" && <CostComparisonTool />}
           {activeSection === "regional" && <RegionalOverview />}
-          {activeSection === "affordability" && <AffordabilityCalculator />}
+          {activeSection === "salary-calculator" && <AffordabilityCalculator />}
         </div>
       </section>
 
