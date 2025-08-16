@@ -12,6 +12,7 @@ import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
 import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3 } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
+import logo from "@/assets/logo.png";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
@@ -27,7 +28,7 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-20 text-center">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-center mb-6">
-              <Flag className="h-12 w-12 text-primary-foreground mr-4" />
+              <img src={logo} alt="Canadian Cost of Living Analyzer" className="h-16 w-16 mr-4 object-contain" />
               <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
                 Canadian Cost of Living Analyzer
               </h1>
@@ -133,7 +134,7 @@ const Index = () => {
       <footer className="bg-primary text-primary-foreground py-12">
         <div className="container mx-auto px-4 text-center">
           <div className="flex items-center justify-center mb-4">
-            <Flag className="h-8 w-8 mr-2" />
+            <img src={logo} alt="Canadian Cost of Living Analyzer" className="h-8 w-8 mr-2 object-contain" />
             <span className="text-lg font-semibold">Canadian Cost of Living Analyzer</span>
           </div>
           <p className="text-primary-foreground/80 mb-4">
