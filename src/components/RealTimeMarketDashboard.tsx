@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown, RefreshCw, AlertCircle, DollarSign, Home, Percent } from "lucide-react";
 import { StatisticsCanadaAPI } from "@/services/StatisticsCanadaAPI";
 import { BankOfCanadaAPI } from "@/services/BankOfCanadaAPI";
-import { NewsAPI } from "@/services/NewsAPI";
+
 
 interface MarketData {
   mortgageRate: number;
   inflationRate: number;
   exchangeRate: number;
   lastUpdated: string;
-  news: any[];
 }
 
 export const RealTimeMarketDashboard = () => {
@@ -24,19 +23,17 @@ export const RealTimeMarketDashboard = () => {
   const fetchMarketData = async () => {
     setLoading(true);
     try {
-      const [mortgageRates, inflationData, exchangeRates, housingNews] = await Promise.all([
+      const [mortgageRates, inflationData, exchangeRates] = await Promise.all([
         BankOfCanadaAPI.getMortgageRates(),
         BankOfCanadaAPI.getInflationRate(),
-        BankOfCanadaAPI.getExchangeRates(),
-        NewsAPI.getHousingNews()
+        BankOfCanadaAPI.getExchangeRates()
       ]);
 
       setMarketData({
         mortgageRate: mortgageRates.rate,
         inflationRate: inflationData.currentRate,
         exchangeRate: exchangeRates.usdCad,
-        lastUpdated: new Date().toISOString(),
-        news: housingNews.slice(0, 3)
+        lastUpdated: new Date().toISOString()
       });
       
       setLastRefresh(new Date());
@@ -248,59 +245,18 @@ export const RealTimeMarketDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Latest Housing News */}
-      <Card className="shadow-elegant animate-fade-in">
-        <CardHeader className="bg-gradient-secondary text-secondary-foreground">
-          <CardTitle>Latest Housing Market News</CardTitle>
-          <CardDescription className="text-secondary-foreground/90">
-            Real-time updates affecting Canadian housing markets
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            {marketData?.news.map((article, index) => (
-              <div key={index} className="flex items-start space-x-3 p-4 bg-muted/30 rounded-lg hover-scale">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant={getImpactColor(article.impact) as "destructive" | "secondary" | "outline"}>
-                      {article.impact.toUpperCase()} IMPACT
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(article.publishedAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <h4 className="font-semibold story-link">
-                    <a href={article.url} target="_blank" rel="noopener noreferrer">
-                      {article.title}
-                    </a>
-                  </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {article.description}
-                  </p>
-                  <div className="text-xs text-muted-foreground mt-2">
-                    Source: {article.source}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Data Sources */}
       <Card className="shadow-card-custom">
         <CardContent className="p-4">
           <div className="text-sm text-muted-foreground text-center">
             <p className="font-medium mb-2">📊 Live Data Sources</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <strong>Bank of Canada:</strong> Interest rates, inflation data, exchange rates
               </div>
               <div>
                 <strong>Statistics Canada:</strong> CPI, housing price index, rental market data
-              </div>
-              <div>
-                <strong>News APIs:</strong> Real-time housing market news and policy updates
               </div>
             </div>
             <div className="mt-3 text-xs">

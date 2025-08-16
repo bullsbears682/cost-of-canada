@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Calculator, TrendingUp, Target, DollarSign, Users, Briefcase, CheckCircle, AlertTriangle } from "lucide-react";
-import { RealEstateAPI } from "@/services/RealEstateAPI";
+
 import { StatisticsCanadaAPI } from "@/services/StatisticsCanadaAPI";
 
 const canadianCities = [
