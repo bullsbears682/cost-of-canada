@@ -29,16 +29,11 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-24 text-center">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-center mb-8 animate-fade-in">
-              <div className="relative mr-6">
-                <div className="absolute inset-0 bg-white/20 backdrop-blur-sm rounded-3xl shadow-glow animate-pulse-glow"></div>
-                <div className="relative bg-white/90 backdrop-blur-md p-4 rounded-3xl shadow-inner border border-white/30">
-                  <img 
-                    src={logo} 
-                    alt="Canadian Cost of Living Analyzer" 
-                    className="h-16 w-16 object-contain floating" 
-                  />
-                </div>
-              </div>
+              <img 
+                src={logo} 
+                alt="Canadian Cost of Living Analyzer" 
+                className="h-20 w-20 mr-6 object-contain floating drop-shadow-2xl" 
+              />
               <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground text-balance leading-tight">
                 Canadian Cost of Living
                 <span className="block gradient-text text-6xl md:text-8xl">Analyzer</span>
@@ -173,16 +168,11 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-glow opacity-50" />
         <div className="relative z-10 container mx-auto px-4 text-center">
           <div className="flex items-center justify-center mb-6 animate-fade-in">
-            <div className="relative mr-4">
-              <div className="absolute inset-0 bg-primary-foreground/10 rounded-2xl shadow-glow"></div>
-              <div className="relative bg-primary-foreground/20 backdrop-blur-sm p-3 rounded-2xl border border-primary-foreground/30">
-                <img 
-                  src={logo} 
-                  alt="Canadian Cost of Living Analyzer" 
-                  className="h-10 w-10 object-contain floating" 
-                />
-              </div>
-            </div>
+            <img 
+              src={logo} 
+              alt="Canadian Cost of Living Analyzer" 
+              className="h-12 w-12 mr-4 object-contain floating" 
+            />
             <span className="text-2xl font-bold">Canadian Cost of Living Analyzer</span>
           </div>
           <p className="text-primary-foreground/90 mb-6 text-lg max-w-2xl mx-auto animate-slide-up">
