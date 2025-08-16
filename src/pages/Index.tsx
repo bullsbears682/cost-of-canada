@@ -8,11 +8,14 @@ import { HousingAffordabilityAnalyzer } from "@/components/HousingAffordabilityA
 import { UtilityCostOptimizer } from "@/components/UtilityCostOptimizer";
 import { TotalCostCalculator } from "@/components/TotalCostCalculator";
 import { GovernmentBenefitsFinder } from "@/components/GovernmentBenefitsFinder";
-import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign } from "lucide-react";
+import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
+import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
+import { APIKeyManager } from "@/components/APIKeyManager";
+import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, Database, BarChart3 } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState("housing-analyzer");
+  const [activeSection, setActiveSection] = useState("market-dashboard");
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -90,13 +93,15 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             {[
-              { id: "housing-analyzer", label: "Housing Affordability Analyzer", icon: Home },
-              { id: "utility-optimizer", label: "Utility Cost Optimizer", icon: Zap },
+              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3 },
+              { id: "housing-analyzer", label: "Housing Affordability", icon: Home },
+              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign },
+              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap },
               { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator },
-              { id: "benefits-finder", label: "Government Benefits Finder", icon: Gift },
+              { id: "benefits-finder", label: "Benefits Finder", icon: Gift },
               { id: "comparison", label: "City Comparison", icon: MapPin },
               { id: "regional", label: "Regional Overview", icon: TrendingUp },
-              { id: "salary-calculator", label: "Salary Calculator", icon: DollarSign }
+              { id: "api-config", label: "API Configuration", icon: Database }
             ].map(({ id, label, icon: Icon }) => (
               <Button
                 key={id}
@@ -115,13 +120,15 @@ const Index = () => {
       {/* Dynamic Content Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
+          {activeSection === "market-dashboard" && <RealTimeMarketDashboard />}
           {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
+          {activeSection === "salary-calculator" && <SalaryRequirementsCalculator />}
           {activeSection === "utility-optimizer" && <UtilityCostOptimizer />}
           {activeSection === "total-calculator" && <TotalCostCalculator />}
           {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
           {activeSection === "comparison" && <CostComparisonTool />}
           {activeSection === "regional" && <RegionalOverview />}
-          {activeSection === "salary-calculator" && <AffordabilityCalculator />}
+          {activeSection === "api-config" && <APIKeyManager />}
         </div>
       </section>
 
