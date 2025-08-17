@@ -26,10 +26,15 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: 'es2015',
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-tabs'],
+          charts: ['recharts'],
+          auth: ['@supabase/supabase-js'],
+          utils: ['date-fns', 'clsx', 'tailwind-merge']
         }
       }
     }
