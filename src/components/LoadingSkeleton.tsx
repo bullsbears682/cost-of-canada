@@ -13,32 +13,32 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
 }) => {
   if (type === 'dashboard') {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 animate-fade-in">
         {/* Header skeleton */}
         <div className="space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
+          <Skeleton className="h-8 w-64 animate-pulse" />
+          <Skeleton className="h-4 w-96 animate-pulse" style={{ animationDelay: '0.1s' }} />
         </div>
         
         {/* Stats cards skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map((i) => (
-            <Card key={i}>
+            <Card key={i} className="animate-fade-in hover:shadow-lg transition-shadow duration-300" style={{ animationDelay: `${i * 0.1}s` }}>
               <CardHeader className="pb-2">
-                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-24 animate-pulse" />
               </CardHeader>
               <CardContent>
-                <Skeleton className="h-8 w-20 mb-2" />
-                <Skeleton className="h-3 w-32" />
+                <Skeleton className="h-8 w-20 mb-2 animate-pulse" />
+                <Skeleton className="h-3 w-32 animate-pulse" />
               </CardContent>
             </Card>
           ))}
         </div>
         
         {/* Chart skeleton */}
-        <Card>
+        <Card className="animate-fade-in hover:shadow-lg transition-shadow duration-300" style={{ animationDelay: '0.4s' }}>
           <CardContent className="pt-6">
-            <Skeleton className="h-64 w-full" />
+            <Skeleton className="h-64 w-full animate-pulse" />
           </CardContent>
         </Card>
       </div>
@@ -47,19 +47,19 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
 
   if (type === 'calculator') {
     return (
-      <Card>
+      <Card className="animate-fade-in hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
-          <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-4 w-64" />
+          <Skeleton className="h-6 w-48 animate-pulse" />
+          <Skeleton className="h-4 w-64 animate-pulse" style={{ animationDelay: '0.1s' }} />
         </CardHeader>
         <CardContent className="space-y-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="space-y-2">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-10 w-full" />
+            <div key={i} className="space-y-2 animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+              <Skeleton className="h-4 w-32 animate-pulse" />
+              <Skeleton className="h-10 w-full animate-pulse" />
             </div>
           ))}
-          <Skeleton className="h-10 w-24" />
+          <Skeleton className="h-10 w-24 animate-pulse hover-scale" style={{ animationDelay: '0.5s' }} />
         </CardContent>
       </Card>
     );
@@ -67,23 +67,23 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
 
   if (type === 'table') {
     return (
-      <Card>
+      <Card className="animate-fade-in hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
-          <Skeleton className="h-6 w-48" />
+          <Skeleton className="h-6 w-48 animate-pulse" />
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {/* Table header */}
             <div className="flex gap-4">
               {[1, 2, 3, 4].map((i) => (
-                <Skeleton key={i} className="h-4 flex-1" />
+                <Skeleton key={i} className="h-4 flex-1 animate-pulse" style={{ animationDelay: `${i * 0.05}s` }} />
               ))}
             </div>
             {/* Table rows */}
             {Array.from({ length: rows }).map((_, i) => (
-              <div key={i} className="flex gap-4">
+              <div key={i} className="flex gap-4 animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
                 {[1, 2, 3, 4].map((j) => (
-                  <Skeleton key={j} className="h-8 flex-1" />
+                  <Skeleton key={j} className="h-8 flex-1 animate-pulse" />
                 ))}
               </div>
             ))}
@@ -95,18 +95,18 @@ const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
 
   if (type === 'chart') {
     return (
-      <Card>
+      <Card className="animate-fade-in hover:shadow-lg transition-shadow duration-300">
         <CardHeader>
-          <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-4 w-64" />
+          <Skeleton className="h-6 w-48 animate-pulse" />
+          <Skeleton className="h-4 w-64 animate-pulse" style={{ animationDelay: '0.1s' }} />
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-80 w-full" />
+          <Skeleton className="h-80 w-full animate-pulse" />
           <div className="flex justify-center gap-4 mt-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Skeleton className="h-3 w-3 rounded-full" />
-                <Skeleton className="h-3 w-16" />
+              <div key={i} className="flex items-center gap-2 animate-fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+                <Skeleton className="h-3 w-3 rounded-full animate-pulse" />
+                <Skeleton className="h-3 w-16 animate-pulse" />
               </div>
             ))}
           </div>

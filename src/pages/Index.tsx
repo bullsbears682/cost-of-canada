@@ -107,19 +107,19 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center animate-scale-in max-w-lg mx-auto">
               <Button 
                 size="lg" 
-                className="bg-white text-primary hover:bg-white/90 shadow-2xl hover-lift text-lg px-8 py-6 h-auto mobile-button font-semibold tracking-wide group w-full sm:w-auto" 
+                className="bg-white text-primary hover:bg-white/90 shadow-2xl hover-lift text-lg px-8 py-6 h-auto mobile-button font-semibold tracking-wide group w-full sm:w-auto transition-all duration-300 hover:shadow-glow" 
                 onClick={() => window.location.href = "/housing-analyzer"}
               >
-                <Calculator className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform duration-200" />
+                <Calculator className="h-6 w-6 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
                 Start Housing Analysis
               </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-white/80 text-white hover:bg-white hover:text-primary hover-lift text-lg px-8 py-6 h-auto backdrop-blur-sm bg-white/10 mobile-button font-semibold tracking-wide group w-full sm:w-auto" 
+                className="border-2 border-white/80 text-white hover:bg-white hover:text-primary hover-lift text-lg px-8 py-6 h-auto backdrop-blur-sm bg-white/10 mobile-button font-semibold tracking-wide group w-full sm:w-auto transition-all duration-300 hover:shadow-glow hover:border-white" 
                 onClick={() => window.location.href = "/benefits-finder"}
               >
-                <Gift className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform duration-200" />
+                <Gift className="h-6 w-6 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
                 Find Benefits
               </Button>
             </div>
@@ -239,7 +239,7 @@ const Index = () => {
               return (
               <Card
                 key={id}
-                className={`group cursor-pointer border-0 bg-gradient-to-br transition-all duration-500 animate-fade-in overflow-hidden relative from-white to-gray-50/80 shadow-card hover:shadow-elegant hover:-translate-y-3 ${
+                className={`group cursor-pointer border-0 bg-gradient-to-br transition-all duration-500 animate-fade-in overflow-hidden relative from-white to-gray-50/80 shadow-card hover:shadow-elegant hover:-translate-y-3 hover-scale ${
                   activeSection === id ? 'ring-2 ring-primary ring-offset-4 shadow-glow scale-105' : ''
                 }`}
                 style={{ animationDelay: `${index * 0.08}s` }}
@@ -254,17 +254,19 @@ const Index = () => {
                 <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                 <CardHeader className="pb-6 pt-6 relative z-10">
                   <div className="mb-4 relative">
-                    <div className={`w-16 h-16 bg-gradient-to-r ${color} rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 mx-auto group-hover:shadow-glow group-hover:scale-110`}>
-                      <Icon className="h-8 w-8 text-white" />
+                    <div className={`w-16 h-16 bg-gradient-to-r ${color} rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 mx-auto group-hover:shadow-glow group-hover:scale-110 group-hover:rotate-3`}>
+                      <Icon className="h-8 w-8 text-white transition-transform duration-300 group-hover:scale-110" />
                     </div>
                     {activeSection === id && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full animate-pulse">
+                        <div className="absolute inset-0 bg-primary rounded-full animate-ping"></div>
+                      </div>
                     )}
                   </div>
-                  <CardTitle className="text-lg font-bold mb-2 transition-colors duration-300 text-center leading-tight text-foreground group-hover:text-primary">
+                  <CardTitle className="text-lg font-bold mb-2 transition-colors duration-300 text-center leading-tight text-foreground group-hover:text-primary group-hover:scale-105">
                     {label}
                   </CardTitle>
-                  <CardDescription className="text-sm leading-snug text-center text-muted-foreground">
+                  <CardDescription className="text-sm leading-snug text-center text-muted-foreground group-hover:text-foreground transition-colors duration-300">
                     {desc}
                   </CardDescription>
                 </CardHeader>
