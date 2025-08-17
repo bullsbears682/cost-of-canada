@@ -5,29 +5,65 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { MessageSquare, Star } from 'lucide-react';
+import { MessageSquare, Star, Loader2 } from 'lucide-react';
+import { FeedbackService } from '@/services/FeedbackService';
 
 const FeedbackWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState('');
   const [category, setCategory] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulate feedback submission
-    toast({
-      title: "Feedback sent!",
-      description: "Thank you for helping us improve MapleMetrics.",
-    });
+    if (!feedback.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter your feedback before submitting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
     
-    // Reset form and close dialog
-    setRating(0);
-    setFeedback('');
-    setCategory('');
-    setIsOpen(false);
+    try {
+      const result = await FeedbackService.submitFeedback({
+        rating,
+        category: category || undefined,
+        message: feedback.trim(),
+      });
+
+      if (result.success) {
+        toast({
+          title: "Feedback sent!",
+          description: "Thank you for helping us improve MapleMetrics.",
+        });
+        
+        // Reset form and close dialog
+        setRating(0);
+        setFeedback('');
+        setCategory('');
+        setIsOpen(false);
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to send feedback. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const StarRating = ({ rating, onRatingClick }: { rating: number; onRatingClick: (rating: number) => void }) => {
@@ -111,11 +147,18 @@ const FeedbackWidget = () => {
           </div>
 
           <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setIsOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" className="hover-scale">
-              Send Feedback
+            <Button type="submit" className="hover-scale" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                'Send Feedback'
+              )}
             </Button>
           </div>
         </form>
