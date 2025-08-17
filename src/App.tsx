@@ -21,7 +21,6 @@ import About from "./pages/About";
 import More from "./pages/More";
 import AdminDashboard from "./pages/AdminDashboard";
 import FeedbackWidget from "./components/FeedbackWidget";
-import BottomTabNavigation from "./components/BottomTabNavigation";
 
 const queryClient = new QueryClient();
 
@@ -52,7 +51,6 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
             <FeedbackWidget />
-            <BottomTabNavigation />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
