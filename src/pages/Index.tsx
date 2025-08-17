@@ -15,7 +15,7 @@ import RealDataIndicator from "@/components/RealDataIndicator";
 import { useRealData } from "@/hooks/useRealData";
 import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
-import logo from "@/assets/logo-handmade.png";
+import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
