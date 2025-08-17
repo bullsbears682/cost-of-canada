@@ -17,6 +17,8 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import SubscriptionPlans from "@/components/SubscriptionPlans";
 import MobileHeader from "@/components/MobileHeader";
+import { AuthGuard } from "@/components/AuthGuard";
+import { FeatureGate } from "@/components/FeatureGate";
 import { useRealData } from "@/hooks/useRealData";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -305,33 +307,58 @@ const Index = () => {
               <LoadingSkeleton type="dashboard" />
             ) : (
               <>
-                {activeSection === "market-dashboard" && <RealTimeMarketDashboard />}
-                {activeSection === "retirement-planner" && <RetirementPlanningCalculator />}
-                {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
-                {activeSection === "salary-calculator" && <SalaryRequirementsCalculator />}
-                {activeSection === "salary-calculator" && !subscription.subscribed && (
-                  <div className="mt-8 p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg">
-                    <p className="text-center text-muted-foreground mb-4">
-                      <Crown className="h-5 w-5 inline mr-2" />
-                      Unlock advanced salary analysis with a premium subscription
-                    </p>
-                    <div className="text-center">
-                      <Button onClick={() => setActiveSection("subscriptions")} className="bg-gradient-primary">
-                        View Plans
-                      </Button>
-                    </div>
-                  </div>
+                {activeSection === "market-dashboard" && (
+                  <FeatureGate requiredTier="Essential" toolName="Real-Time Market Dashboard">
+                    <RealTimeMarketDashboard />
+                  </FeatureGate>
                 )}
-                {activeSection === "utility-optimizer" && <UtilityCostOptimizer />}
-                {activeSection === "total-calculator" && <TotalCostCalculator />}
-                {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
-                {activeSection === "comparison" && <CostComparisonTool />}
-                {activeSection === "regional" && <RegionalOverview />}
+                {activeSection === "retirement-planner" && (
+                  <FeatureGate requiredTier="Professional" toolName="Retirement Planning Calculator">
+                    <RetirementPlanningCalculator />
+                  </FeatureGate>
+                )}
+                {activeSection === "housing-analyzer" && (
+                  <FeatureGate requiredTier="Essential" toolName="Housing Affordability Analyzer">
+                    <HousingAffordabilityAnalyzer />
+                  </FeatureGate>
+                )}
+                {activeSection === "salary-calculator" && (
+                  <FeatureGate requiredTier="Professional" toolName="Salary Requirements Calculator">
+                    <SalaryRequirementsCalculator />
+                  </FeatureGate>
+                )}
+                {activeSection === "utility-optimizer" && (
+                  <FeatureGate requiredTier="Essential" toolName="Utility Cost Optimizer">
+                    <UtilityCostOptimizer />
+                  </FeatureGate>
+                )}
+                {activeSection === "total-calculator" && (
+                  <FeatureGate requiredTier="Professional" toolName="Total Cost Calculator">
+                    <TotalCostCalculator />
+                  </FeatureGate>
+                )}
+                {activeSection === "benefits-finder" && (
+                  <FeatureGate requiredTier="Essential" toolName="Government Benefits Finder">
+                    <GovernmentBenefitsFinder />
+                  </FeatureGate>
+                )}
+                {activeSection === "comparison" && (
+                  <FeatureGate requiredTier="Professional" toolName="Cost Comparison Tool">
+                    <CostComparisonTool />
+                  </FeatureGate>
+                )}
+                {activeSection === "regional" && (
+                  <FeatureGate requiredTier="Expert" toolName="Regional Overview">
+                    <RegionalOverview />
+                  </FeatureGate>
+                )}
                 {activeSection === "subscriptions" && <SubscriptionPlans />}
                 {activeSection === "news" && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
-                      <NewsWidget />
+                      <FeatureGate requiredTier="Professional" toolName="News Widget">
+                        <NewsWidget />
+                      </FeatureGate>
                     </div>
                     <div className="space-y-4">
                       <MobileOptimizedCard title="Quick Links">
