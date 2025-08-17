@@ -10,8 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserProfileService, UserProfile, SavedCalculation } from '@/services/UserProfileService';
-import { PDFExportService } from '@/services/PDFExportService';
-import { User, Save, History, Settings, MapPin, DollarSign, Trash2, Star, FileDown } from 'lucide-react';
+import { User, Save, History, Settings, MapPin, DollarSign, Trash2, Star } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface UserProfileButtonProps {
@@ -179,26 +178,7 @@ const UserProfileButton: React.FC<UserProfileButtonProps> = ({ onSaveCalculation
     }
   };
 
-  const handleExportProfile = async () => {
-    if (!user || !profile) return;
-    
-    setLoading(true);
-    try {
-      await PDFExportService.exportUserProfile(profile, savedCalculations);
-      toast({
-        title: "Profile Exported",
-        description: "Your profile and calculation history have been exported to PDF.",
-      });
-    } catch (error) {
-      toast({
-        title: "Export Failed",
-        description: "There was an error exporting your profile. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const getCalculationTypeColor = (type: string) => {
     switch (type) {
@@ -336,20 +316,12 @@ const UserProfileButton: React.FC<UserProfileButtonProps> = ({ onSaveCalculation
           <TabsContent value="calculations" className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold">Your Saved Calculations</h3>
-              <div className="flex gap-2">
-                {savedCalculations.length > 0 && (
-                  <Button onClick={handleExportProfile} size="sm" variant="outline" className="gap-2">
-                    <FileDown className="h-4 w-4" />
-                    Export All
-                  </Button>
-                )}
-                {currentCalculation && (
-                  <Button onClick={handleSaveCurrentCalculation} size="sm" className="gap-2">
-                    <Save className="h-4 w-4" />
-                    Save Current
-                  </Button>
-                )}
-              </div>
+              {currentCalculation && (
+                <Button onClick={handleSaveCurrentCalculation} size="sm" className="gap-2">
+                  <Save className="h-4 w-4" />
+                  Save Current
+                </Button>
+              )}
             </div>
             
             {savedCalculations.length === 0 ? (
