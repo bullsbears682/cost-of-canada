@@ -38,12 +38,11 @@ const Index = () => {
             <div className="flex items-center justify-center mb-8 animate-fade-in">
               <img 
                 src={logo} 
-                alt="Canadian Cost of Living Analyzer" 
+                alt="MapleMetrics - Canadian Cost of Living Analysis" 
                 className="h-20 w-20 mr-6 object-contain floating drop-shadow-2xl" 
               />
               <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground text-balance leading-tight">
-                Canadian Cost of Living
-                <span className="block gradient-text text-6xl md:text-8xl">Analyzer</span>
+                <span className="block gradient-text text-6xl md:text-8xl">MapleMetrics</span>
               </h1>
             </div>
             <p className="text-xl md:text-2xl text-primary-foreground/90 mb-10 leading-relaxed max-w-4xl mx-auto animate-slide-up">
@@ -234,10 +233,10 @@ const Index = () => {
           <div className="flex items-center justify-center mb-6 animate-fade-in">
             <img 
               src={logo} 
-              alt="Canadian Cost of Living Analyzer" 
+              alt="MapleMetrics" 
               className="h-12 w-12 mr-4 object-contain floating" 
             />
-            <span className="text-2xl font-bold">Canadian Cost of Living Analyzer</span>
+            <span className="text-2xl font-bold">MapleMetrics</span>
           </div>
           <p className="text-primary-foreground/90 mb-6 text-lg max-w-2xl mx-auto animate-slide-up">
             Empowering Canadians with data-driven cost analysis and housing insights
@@ -258,7 +257,7 @@ const Index = () => {
           </div>
           <div className="border-t border-primary-foreground/20 pt-6">
             <p className="text-sm text-primary-foreground/60">
-              © 2025 Canadian Cost of Living Analyzer. Built with ❤️ for Canadians.
+              © 2025 MapleMetrics. Built with ❤️ for Canadians.
             </p>
           </div>
         </div>

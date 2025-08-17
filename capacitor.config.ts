@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.05bbd1a29a81435689ae6ce7cb3599e2',
-  appName: 'Canadian Cost of Living Analyzer',
+  appName: 'MapleMetrics',
   webDir: 'dist',
   server: {
     url: 'https://05bbd1a2-9a81-4356-89ae-6ce7cb3599e2.lovableproject.com?forceHideBadge=true',
