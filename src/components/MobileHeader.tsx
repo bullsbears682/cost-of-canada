@@ -28,11 +28,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
   ];
 
   const supportItems = [
-    { id: "faq", label: "FAQ", icon: HelpCircle, path: "/faq" },
-    { id: "contact", label: "Contact Us", icon: Mail, path: "/contact" },
-    { id: "about", label: "About", icon: Info, path: "/about" },
-    { id: "privacy", label: "Privacy Policy", icon: FileText, path: "/privacy" },
-    { id: "terms", label: "Terms of Service", icon: FileText, path: "/terms" },
+    { id: "faq", label: "FAQ", icon: HelpCircle, path: "/faq", description: "Get answers to common questions", priority: true },
+    { id: "contact", label: "Contact Us", icon: Mail, path: "/contact", description: "Get help and support", priority: true },
+    { id: "about", label: "About", icon: Info, path: "/about", description: "Learn about MapleMetrics", priority: false },
+    { id: "privacy", label: "Privacy Policy", icon: FileText, path: "/privacy", description: "How we protect your data", priority: false },
+    { id: "terms", label: "Terms of Service", icon: FileText, path: "/terms", description: "Terms and conditions", priority: false },
   ];
 
   return (
@@ -143,24 +143,53 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">Support</h3>
+                      <h3 className="text-sm font-semibold text-foreground mb-3 px-2 flex items-center gap-2">
+                        <HelpCircle className="h-4 w-4" />
+                        Support & Info
+                      </h3>
                       <div className="space-y-2">
                         {supportItems.map((item, index) => {
                           const Icon = item.icon;
+                          const isActive = location.pathname === item.path;
+                          const isPriority = item.priority;
                           return (
-                            <Button
+                            <div
                               key={item.id}
-                              variant="ghost"
-                              className="w-full justify-start text-left h-10 transition-all duration-300 animate-fade-in hover-scale hover:bg-accent hover:text-accent-foreground hover:translate-x-2 hover:shadow-md"
+                              className={`rounded-lg p-3 transition-all duration-300 animate-fade-in hover-scale cursor-pointer ${
+                                isActive 
+                                  ? 'bg-accent text-accent-foreground shadow-md scale-105' 
+                                  : isPriority
+                                  ? 'hover:bg-primary/10 hover:text-primary hover:translate-x-1 hover:shadow-md border border-primary/20'
+                                  : 'hover:bg-accent/30 hover:text-accent-foreground hover:translate-x-1 hover:shadow-sm'
+                              }`}
                               style={{ animationDelay: `${(menuItems.length + index) * 0.05}s` }}
                               onClick={() => {
                                 window.location.href = item.path;
                                 setIsOpen(false);
                               }}
                             >
-                              <Icon className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-105" />
-                              {item.label}
-                            </Button>
+                              <div className="flex items-start gap-3">
+                                <Icon className={`h-4 w-4 mt-0.5 transition-transform duration-200 flex-shrink-0 ${
+                                  isActive ? 'scale-110 text-accent-foreground' : 
+                                  isPriority ? 'text-primary scale-105' : 'text-muted-foreground group-hover:scale-105'
+                                }`} />
+                                <div className="flex-1 min-w-0">
+                                  <div className={`font-medium text-sm ${
+                                    isActive ? 'text-accent-foreground' : 
+                                    isPriority ? 'text-primary font-semibold' : 'text-foreground'
+                                  }`}>
+                                    {item.label}
+                                    {isPriority && <span className="ml-1 text-xs text-primary">•</span>}
+                                  </div>
+                                  <div className={`text-xs mt-0.5 ${
+                                    isActive ? 'text-accent-foreground/70' : 
+                                    isPriority ? 'text-primary/80' : 'text-muted-foreground'
+                                  }`}>
+                                    {item.description}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           );
                         })}
                       </div>
