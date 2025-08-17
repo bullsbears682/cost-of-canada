@@ -10,7 +10,7 @@ import { TotalCostCalculator } from "@/components/TotalCostCalculator";
 import { GovernmentBenefitsFinder } from "@/components/GovernmentBenefitsFinder";
 import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
-import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3 } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, Building2 } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "@/assets/logo-handmade.png";
 
@@ -29,11 +29,16 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-24 text-center">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-center mb-8 animate-fade-in">
-              <img 
-                src={logo} 
-                alt="Canadian Cost of Living Analyzer" 
-                className="h-20 w-20 mr-6 object-contain floating drop-shadow-2xl" 
-              />
+              <div className="relative mr-6">
+                <img 
+                  src={logo} 
+                  alt="Canadian Cost of Living Analyzer" 
+                  className="h-20 w-20 object-contain floating drop-shadow-2xl" 
+                />
+                <div className="absolute -top-1 -right-1 bg-gradient-primary rounded-full p-1.5 shadow-glow">
+                  <Building2 className="h-4 w-4 text-primary-foreground" />
+                </div>
+              </div>
               <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground text-balance leading-tight">
                 Canadian Cost of Living
                 <span className="block gradient-text text-6xl md:text-8xl">Analyzer</span>
@@ -168,11 +173,16 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-glow opacity-50" />
         <div className="relative z-10 container mx-auto px-4 text-center">
           <div className="flex items-center justify-center mb-6 animate-fade-in">
-            <img 
-              src={logo} 
-              alt="Canadian Cost of Living Analyzer" 
-              className="h-12 w-12 mr-4 object-contain floating" 
-            />
+            <div className="relative mr-4">
+              <img 
+                src={logo} 
+                alt="Canadian Cost of Living Analyzer" 
+                className="h-12 w-12 object-contain floating" 
+              />
+              <div className="absolute -top-0.5 -right-0.5 bg-gradient-primary rounded-full p-1 shadow-glow">
+                <Building2 className="h-3 w-3 text-primary-foreground" />
+              </div>
+            </div>
             <span className="text-2xl font-bold">Canadian Cost of Living Analyzer</span>
           </div>
           <p className="text-primary-foreground/90 mb-6 text-lg max-w-2xl mx-auto animate-slide-up">
