@@ -2,42 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { Progress } from '@/components/ui/progress';
 
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
-  const [buildingStage, setBuildingStage] = useState(0);
+  const [analysisStage, setAnalysisStage] = useState(0);
 
   useEffect(() => {
-    const buildingStages = [
-      { stage: 1, delay: 1000, progress: 20 },  // Foundation
-      { stage: 2, delay: 2000, progress: 40 },  // Walls
-      { stage: 3, delay: 1500, progress: 60 },  // Roof
-      { stage: 4, delay: 2000, progress: 80 },  // Details
-      { stage: 5, delay: 1500, progress: 100 }, // Complete
+    // Canadian data analysis stages
+    const stages = [
+      { stage: 1, delay: 1200, progress: 20 },  // Maple leaf grows
+      { stage: 2, delay: 1500, progress: 40 },  // Housing data bars
+      { stage: 3, delay: 1300, progress: 60 },  // Economic indicators
+      { stage: 4, delay: 1400, progress: 80 },  // Regional comparison
+      { stage: 5, delay: 1000, progress: 100 }, // Analysis complete
     ];
 
     let currentStageIndex = 0;
     
-    const buildNext = () => {
-      if (currentStageIndex < buildingStages.length) {
-        const currentStage = buildingStages[currentStageIndex];
+    const analyzeNext = () => {
+      if (currentStageIndex < stages.length) {
+        const currentStage = stages[currentStageIndex];
         setTimeout(() => {
-          setBuildingStage(currentStage.stage);
+          setAnalysisStage(currentStage.stage);
           
           if (currentStage.stage === 5) {
-            // House is complete, finish loading after a short pause
-            setTimeout(onComplete, 1000);
+            // Analysis is complete
+            setTimeout(onComplete, 800);
           } else {
             currentStageIndex++;
-            buildNext();
+            analyzeNext();
           }
         }, currentStage.delay);
       }
     };
 
-    // Start building after a short delay
-    setTimeout(buildNext, 500);
+    // Start analysis after a short delay
+    setTimeout(analyzeNext, 500);
   }, [onComplete]);
 
   const getProgress = () => {
-    switch (buildingStage) {
+    switch (analysisStage) {
       case 0: return 0;
       case 1: return 20;
       case 2: return 40;
@@ -51,136 +52,134 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
   return (
     <div className="fixed inset-0 bg-gradient-hero flex items-center justify-center z-50 touch-manipulation">
       <div className="text-center px-4 max-w-md mx-auto">
-        {/* House Building Animation */}
-        <div className="relative w-56 h-40 md:w-72 md:h-48 mx-auto mb-8">
+        {/* Canadian Data Analysis Animation */}
+        <div className="relative w-64 h-48 md:w-80 md:h-60 mx-auto mb-8">
           <svg 
-            viewBox="0 0 200 120" 
+            viewBox="0 0 240 180" 
             className="w-full h-full drop-shadow-lg"
-            style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))' }}
+            style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}
           >
-            {/* Ground */}
-            <rect 
-              x="0" 
-              y="110" 
-              width="200" 
-              height="10" 
-              fill="#4ade80"
-            />
+            {/* Background Grid */}
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#ffffff20" strokeWidth="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="240" height="180" fill="url(#grid)" />
             
-            {/* Foundation - Stage 1 */}
-            {buildingStage >= 1 && (
-              <rect 
-                x="50" 
-                y="100" 
-                width="100" 
-                height="10" 
-                fill="#6b7280"
-                className="animate-scale-in"
-              />
-            )}
-            
-            {/* Walls - Stage 2 */}
-            {buildingStage >= 2 && (
-              <g className="animate-slide-up" style={{ animationDuration: '1s' }}>
-                <rect x="50" y="70" width="100" height="30" fill="#f59e0b" />
-                <rect x="50" y="70" width="100" height="30" fill="none" stroke="#d97706" strokeWidth="1" />
-                {/* Brick pattern */}
-                <line x1="50" y1="80" x2="150" y2="80" stroke="#d97706" strokeWidth="0.5" />
-                <line x1="50" y1="90" x2="150" y2="90" stroke="#d97706" strokeWidth="0.5" />
-                <line x1="70" y1="70" x2="70" y2="80" stroke="#d97706" strokeWidth="0.5" />
-                <line x1="90" y1="80" x2="90" y2="90" stroke="#d97706" strokeWidth="0.5" />
-                <line x1="110" y1="70" x2="110" y2="80" stroke="#d97706" strokeWidth="0.5" />
-                <line x1="130" y1="80" x2="130" y2="90" stroke="#d97706" strokeWidth="0.5" />
-              </g>
-            )}
-            
-            {/* Roof - Stage 3 */}
-            {buildingStage >= 3 && (
-              <g className="animate-scale-in" style={{ transformOrigin: '100px 70px', animationDuration: '1.2s' }}>
-                <polygon 
-                  points="45,70 100,45 155,70" 
+            {/* Central Maple Leaf - Stage 1 */}
+            {analysisStage >= 1 && (
+              <g className="animate-scale-in" style={{ transformOrigin: '120px 90px', animationDuration: '1.5s' }}>
+                <path 
+                  d="M120,60 L125,75 L140,70 L130,85 L145,95 L125,90 L120,105 L115,90 L95,95 L110,85 L100,70 L115,75 Z" 
                   fill="#dc2626" 
-                />
-                <polygon 
-                  points="45,70 100,45 155,70" 
-                  fill="none" 
                   stroke="#991b1b" 
-                  strokeWidth="1"
+                  strokeWidth="2"
+                  className="floating"
                 />
-                {/* Roof tiles pattern */}
-                <line x1="50" y1="65" x2="95" y2="47" stroke="#991b1b" strokeWidth="0.5" />
-                <line x1="55" y1="67" x2="100" y2="49" stroke="#991b1b" strokeWidth="0.5" />
-                <line x1="105" y1="49" x2="150" y2="67" stroke="#991b1b" strokeWidth="0.5" />
-                <line x1="100" y1="47" x2="145" y2="65" stroke="#991b1b" strokeWidth="0.5" />
+                {/* Maple leaf veins */}
+                <line x1="120" y1="75" x2="120" y2="95" stroke="#991b1b" strokeWidth="1.5" />
+                <line x1="115" y1="80" x2="125" y2="80" stroke="#991b1b" strokeWidth="1" />
+                <line x1="110" y1="85" x2="130" y2="85" stroke="#991b1b" strokeWidth="1" />
               </g>
             )}
             
-            {/* Windows and Door - Stage 4 */}
-            {buildingStage >= 4 && (
+            {/* Housing Data Bars - Stage 2 */}
+            {analysisStage >= 2 && (
+              <g className="animate-slide-up" style={{ animationDuration: '1.2s' }}>
+                {/* Data bars representing housing costs */}
+                <rect x="30" y="140" width="15" height="25" fill="#3b82f6" className="animate-scale-in" style={{ animationDelay: '0.2s' }}>
+                  <animate attributeName="height" values="0;25" dur="1s" begin="0.2s" />
+                  <animate attributeName="y" values="165;140" dur="1s" begin="0.2s" />
+                </rect>
+                <rect x="50" y="120" width="15" height="45" fill="#10b981" className="animate-scale-in" style={{ animationDelay: '0.4s' }}>
+                  <animate attributeName="height" values="0;45" dur="1s" begin="0.4s" />
+                  <animate attributeName="y" values="165;120" dur="1s" begin="0.4s" />
+                </rect>
+                <rect x="70" y="130" width="15" height="35" fill="#f59e0b" className="animate-scale-in" style={{ animationDelay: '0.6s' }}>
+                  <animate attributeName="height" values="0;35" dur="1s" begin="0.6s" />
+                  <animate attributeName="y" values="165;130" dur="1s" begin="0.6s" />
+                </rect>
+                
+                {/* Labels */}
+                <text x="37" y="175" fill="#ffffff80" fontSize="8" textAnchor="middle">BC</text>
+                <text x="57" y="175" fill="#ffffff80" fontSize="8" textAnchor="middle">ON</text>
+                <text x="77" y="175" fill="#ffffff80" fontSize="8" textAnchor="middle">AB</text>
+              </g>
+            )}
+            
+            {/* Economic Indicators - Stage 3 */}
+            {analysisStage >= 3 && (
               <g className="animate-fade-in" style={{ animationDuration: '1.5s' }}>
-                {/* Door */}
-                <rect x="90" y="85" width="20" height="15" fill="#8b4513" stroke="#654321" strokeWidth="0.5" />
-                <circle cx="105" cy="92" r="1" fill="#fbbf24" />
-                {/* Door panels */}
-                <line x1="90" y1="90" x2="110" y2="90" stroke="#654321" strokeWidth="0.3" />
-                <line x1="90" y1="95" x2="110" y2="95" stroke="#654321" strokeWidth="0.3" />
+                {/* Curved trend line */}
+                <path 
+                  d="M160,140 Q170,130 180,125 T200,120" 
+                  fill="none" 
+                  stroke="#22c55e" 
+                  strokeWidth="3"
+                  strokeDasharray="100"
+                  strokeDashoffset="100"
+                >
+                  <animate attributeName="stroke-dashoffset" values="100;0" dur="1.5s" />
+                </path>
                 
-                {/* Left Window */}
-                <rect x="60" y="80" width="15" height="12" fill="#87ceeb" stroke="#1d4ed8" strokeWidth="1" />
-                <line x1="67.5" y1="80" x2="67.5" y2="92" stroke="#1d4ed8" strokeWidth="0.8" />
-                <line x1="60" y1="86" x2="75" y2="86" stroke="#1d4ed8" strokeWidth="0.8" />
-                {/* Window frame */}
-                <rect x="59" y="79" width="17" height="14" fill="none" stroke="#b45309" strokeWidth="1" />
+                {/* Data points */}
+                <circle cx="160" cy="140" r="4" fill="#22c55e" className="animate-scale-in" style={{ animationDelay: '0.5s' }} />
+                <circle cx="175" cy="128" r="4" fill="#22c55e" className="animate-scale-in" style={{ animationDelay: '0.8s' }} />
+                <circle cx="190" cy="125" r="4" fill="#22c55e" className="animate-scale-in" style={{ animationDelay: '1.1s' }} />
+                <circle cx="200" cy="120" r="4" fill="#22c55e" className="animate-scale-in" style={{ animationDelay: '1.4s' }} />
                 
-                {/* Right Window */}
-                <rect x="125" y="80" width="15" height="12" fill="#87ceeb" stroke="#1d4ed8" strokeWidth="1" />
-                <line x1="132.5" y1="80" x2="132.5" y2="92" stroke="#1d4ed8" strokeWidth="0.8" />
-                <line x1="125" y1="86" x2="140" y2="86" stroke="#1d4ed8" strokeWidth="0.8" />
-                {/* Window frame */}
-                <rect x="124" y="79" width="17" height="14" fill="none" stroke="#b45309" strokeWidth="1" />
+                {/* Dollar signs floating up */}
+                <g className="animate-slide-up" style={{ animationDuration: '2s', animationDelay: '0.5s' }}>
+                  <text x="165" y="115" fill="#fbbf24" fontSize="12" fontWeight="bold">$</text>
+                  <text x="185" y="110" fill="#fbbf24" fontSize="10" fontWeight="bold">$</text>
+                  <text x="195" y="105" fill="#fbbf24" fontSize="8" fontWeight="bold">$</text>
+                </g>
               </g>
             )}
             
-            {/* Finishing touches - Stage 5 */}
-            {buildingStage >= 5 && (
-              <g className="animate-fade-in" style={{ animationDuration: '2s' }}>
-                {/* Chimney */}
-                <rect x="120" y="50" width="8" height="15" fill="#6b7280" stroke="#4b5563" strokeWidth="0.5" />
-                <rect x="118" y="48" width="12" height="4" fill="#4b5563" />
-                {/* Chimney bricks */}
-                <line x1="120" y1="55" x2="128" y2="55" stroke="#4b5563" strokeWidth="0.3" />
-                <line x1="120" y1="60" x2="128" y2="60" stroke="#4b5563" strokeWidth="0.3" />
+            {/* Regional Comparison Pie Chart - Stage 4 */}
+            {analysisStage >= 4 && (
+              <g className="animate-scale-in" style={{ transformOrigin: '180px 60px', animationDuration: '1.3s' }}>
+                {/* Pie slices */}
+                <path d="M 180,60 L 180,40 A 20,20 0 0,1 195,50 Z" fill="#3b82f6" />
+                <path d="M 180,60 L 195,50 A 20,20 0 0,1 190,75 Z" fill="#10b981" />
+                <path d="M 180,60 L 190,75 A 20,20 0 0,1 170,75 Z" fill="#f59e0b" />
+                <path d="M 180,60 L 170,75 A 20,20 0 0,1 175,45 Z" fill="#ef4444" />
+                <path d="M 180,60 L 175,45 A 20,20 0 0,1 180,40 Z" fill="#8b5cf6" />
                 
-                {/* Animated Smoke */}
-                <g className="animate-bounce" style={{ animationDuration: '3s', animationIterationCount: 'infinite' }}>
-                  <circle cx="122" cy="45" r="2" fill="#e5e7eb" opacity="0.8" />
-                  <circle cx="125" cy="40" r="1.5" fill="#e5e7eb" opacity="0.6" />
-                  <circle cx="127" cy="36" r="1" fill="#e5e7eb" opacity="0.4" />
-                  <circle cx="129" cy="32" r="0.8" fill="#e5e7eb" opacity="0.2" />
-                </g>
+                {/* Center circle */}
+                <circle cx="180" cy="60" r="8" fill="#1f2937" />
+                <text x="180" y="64" fill="#ffffff" fontSize="6" textAnchor="middle">CA</text>
+              </g>
+            )}
+            
+            {/* Final Analytics Dashboard - Stage 5 */}
+            {analysisStage >= 5 && (
+              <g className="animate-fade-in" style={{ animationDuration: '1.8s' }}>
+                {/* Dashboard frame */}
+                <rect x="20" y="20" width="200" height="20" fill="#1f293780" stroke="#3b82f6" strokeWidth="1" rx="4" />
+                <rect x="25" y="24" width="30" height="12" fill="#22c55e" rx="2" />
+                <rect x="60" y="24" width="25" height="12" fill="#f59e0b" rx="2" />
+                <rect x="90" y="24" width="35" height="12" fill="#ef4444" rx="2" />
                 
-                {/* Enhanced Landscaping */}
-                <g fill="#22c55e">
-                  {/* Grass tufts */}
-                  <rect x="25" y="108" width="2" height="4" />
-                  <rect x="30" y="109" width="1" height="3" />
-                  <rect x="35" y="107" width="2" height="5" />
-                  <rect x="160" y="108" width="2" height="4" />
-                  <rect x="165" y="109" width="1" height="3" />
-                  <rect x="170" y="107" width="2" height="5" />
-                  <rect x="175" y="109" width="1" height="3" />
-                </g>
-                
-                {/* Decorative flowers */}
+                {/* Animated data stream */}
                 <g>
-                  <circle cx="40" cy="105" r="2" fill="#ec4899" />
-                  <circle cx="42" cy="103" r="1.5" fill="#f97316" />
-                  <circle cx="160" cy="105" r="2" fill="#8b5cf6" />
-                  <circle cx="162" cy="103" r="1.5" fill="#eab308" />
+                  <circle cx="200" cy="30" r="2" fill="#22c55e" opacity="0.8">
+                    <animate attributeName="cx" values="200;180;200" dur="2s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite" />
+                  </circle>
+                  <circle cx="205" cy="30" r="1.5" fill="#3b82f6" opacity="0.6">
+                    <animate attributeName="cx" values="205;185;205" dur="2.5s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.5s" repeatCount="indefinite" />
+                  </circle>
                 </g>
                 
-                {/* Welcome mat */}
-                <rect x="85" y="99" width="30" height="3" fill="#92400e" stroke="#78350f" strokeWidth="0.3" />
+                {/* Success checkmark */}
+                <g className="animate-scale-in" style={{ animationDelay: '1s' }}>
+                  <circle cx="120" cy="40" r="12" fill="#22c55e" />
+                  <path d="M112,40 L118,46 L128,34" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+                </g>
               </g>
             )}
           </svg>
@@ -193,12 +192,12 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             className="h-2 bg-white/20"
           />
           <div className="text-white/80 text-sm md:text-base font-medium">
-            {buildingStage === 0 && "Finding the perfect location... 🔍"}
-            {buildingStage === 1 && "Laying a solid foundation... 🏗️"}
-            {buildingStage === 2 && "Raising the walls... 🧱"}
-            {buildingStage === 3 && "Installing the roof... 🏠"}
-            {buildingStage === 4 && "Adding windows and doors... 🚪"}
-            {buildingStage === 5 && "Welcome to your new Canadian home! 🎉"}
+            {analysisStage === 0 && "Initializing Canadian cost analysis... 🇨🇦"}
+            {analysisStage === 1 && "Connecting to government databases... 🍁"}
+            {analysisStage === 2 && "Analyzing provincial housing data... 🏠"}
+            {analysisStage === 3 && "Processing economic indicators... 📈"}
+            {analysisStage === 4 && "Comparing regional costs... 🗺️"}
+            {analysisStage === 5 && "Welcome to MapleMetrics! Ready to explore! ✨"}
           </div>
         </div>
       </div>
