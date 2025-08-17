@@ -336,13 +336,6 @@ const Index = () => {
               </div>
             </div>
             
-            <div className="text-center animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <h4 className="text-lg font-semibold mb-4 text-primary-foreground">Made in Canada</h4>
-              <div className="flex items-center justify-center gap-3 text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300 group">
-                <Flag className="h-5 w-5 text-canada-red group-hover:scale-110 transition-transform duration-300" />
-                <span>Built with pride for Canadians</span>
-              </div>
-            </div>
             
             <div className="text-center md:text-right animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <h4 className="text-lg font-semibold mb-4 text-primary-foreground">Quality Promise</h4>
