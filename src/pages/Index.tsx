@@ -12,8 +12,12 @@ import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
 import RetirementPlanningCalculator from "@/components/RetirementPlanningCalculator";
 import RealDataIndicator from "@/components/RealDataIndicator";
+import NewsWidget from "@/components/NewsWidget";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
+import ExportButton from "@/components/ExportButton";
+import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import { useRealData } from "@/hooks/useRealData";
-import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 
@@ -47,23 +51,23 @@ const Index = () => {
               Navigate Canada's housing affordability with comprehensive regional analysis. 
               Make informed decisions with <span className="font-semibold text-primary-foreground">real-time government data</span> and expert insights.
             </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-scale-in">
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center animate-scale-in">
               <Button 
                 size="lg" 
                 variant="secondary" 
-                className="shadow-glow hover-lift text-lg px-8 py-4 h-auto" 
+                className="shadow-glow hover-lift text-base md:text-lg px-6 md:px-8 py-3 md:py-4 h-auto mobile-button" 
                 onClick={() => setActiveSection("housing-analyzer")}
               >
-                <Calculator className="h-6 w-6 mr-3" />
+                <Calculator className="h-5 w-5 md:h-6 md:w-6 mr-2 md:mr-3" />
                 Start Housing Analysis
               </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary hover-lift text-lg px-8 py-4 h-auto backdrop-blur-sm bg-white/10" 
+                className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary hover-lift text-base md:text-lg px-6 md:px-8 py-3 md:py-4 h-auto backdrop-blur-sm bg-white/10 mobile-button" 
                 onClick={() => setActiveSection("benefits-finder")}
               >
-                <Gift className="h-6 w-6 mr-3" />
+                <Gift className="h-5 w-5 md:h-6 md:w-6 mr-2 md:mr-3" />
                 Find Benefits
               </Button>
             </div>
@@ -131,7 +135,8 @@ const Index = () => {
               { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "bg-gradient-primary" },
               { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "bg-canada-red" },
               { id: "comparison", label: "City Comparison", icon: MapPin, color: "bg-gradient-secondary" },
-              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "bg-gradient-primary" }
+              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "bg-gradient-primary" },
+              { id: "news", label: "Economic News", icon: Newspaper, color: "bg-gradient-secondary" }
             ].map(({ id, label, icon: Icon, color }, index) => (
               <Button
                 key={id}
@@ -167,15 +172,164 @@ const Index = () => {
           </div>
           
           <div className="animate-fade-in">
-            {activeSection === "market-dashboard" && <RealTimeMarketDashboard />}
-            {activeSection === "retirement-planner" && <RetirementPlanningCalculator />}
-            {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
-            {activeSection === "salary-calculator" && <SalaryRequirementsCalculator />}
-            {activeSection === "utility-optimizer" && <UtilityCostOptimizer />}
-            {activeSection === "total-calculator" && <TotalCostCalculator />}
-            {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
-            {activeSection === "comparison" && <CostComparisonTool />}
-            {activeSection === "regional" && <RegionalOverview />}
+            {loading ? (
+              <LoadingSkeleton type="dashboard" />
+            ) : (
+              <>
+                {activeSection === "market-dashboard" && (
+                  <div id="market-dashboard-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="market-dashboard-content"
+                        filename="market-dashboard-report"
+                        title="Market Dashboard Report"
+                      />
+                    </div>
+                    <RealTimeMarketDashboard />
+                  </div>
+                )}
+                {activeSection === "retirement-planner" && (
+                  <div id="retirement-planner-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="retirement-planner-content"
+                        filename="retirement-planner-report"
+                        title="Retirement Planning Report"
+                      />
+                    </div>
+                    <RetirementPlanningCalculator />
+                  </div>
+                )}
+                {activeSection === "housing-analyzer" && (
+                  <div id="housing-analyzer-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="housing-analyzer-content"
+                        filename="housing-affordability-report"
+                        title="Housing Affordability Analysis"
+                      />
+                    </div>
+                    <HousingAffordabilityAnalyzer />
+                  </div>
+                )}
+                {activeSection === "salary-calculator" && (
+                  <div id="salary-calculator-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="salary-calculator-content"
+                        filename="salary-requirements-report"
+                        title="Salary Requirements Analysis"
+                      />
+                    </div>
+                    <SalaryRequirementsCalculator />
+                  </div>
+                )}
+                {activeSection === "utility-optimizer" && (
+                  <div id="utility-optimizer-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="utility-optimizer-content"
+                        filename="utility-cost-report"
+                        title="Utility Cost Optimization"
+                      />
+                    </div>
+                    <UtilityCostOptimizer />
+                  </div>
+                )}
+                {activeSection === "total-calculator" && (
+                  <div id="total-calculator-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="total-calculator-content"
+                        filename="total-cost-report"
+                        title="Total Cost Analysis"
+                      />
+                    </div>
+                    <TotalCostCalculator />
+                  </div>
+                )}
+                {activeSection === "benefits-finder" && (
+                  <div id="benefits-finder-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="benefits-finder-content"
+                        filename="benefits-analysis-report"
+                        title="Government Benefits Analysis"
+                      />
+                    </div>
+                    <GovernmentBenefitsFinder />
+                  </div>
+                )}
+                {activeSection === "comparison" && (
+                  <div id="comparison-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="comparison-content"
+                        filename="city-comparison-report"
+                        title="City Comparison Analysis"
+                      />
+                    </div>
+                    <CostComparisonTool />
+                  </div>
+                )}
+                {activeSection === "regional" && (
+                  <div id="regional-content">
+                    <div className="flex justify-end mb-4">
+                      <ExportButton 
+                        elementId="regional-content"
+                        filename="regional-overview-report"
+                        title="Regional Overview Analysis"
+                      />
+                    </div>
+                    <RegionalOverview />
+                  </div>
+                )}
+                {activeSection === "news" && (
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
+                      <NewsWidget />
+                    </div>
+                    <div className="space-y-4">
+                      <MobileOptimizedCard title="Quick Links">
+                        <div className="space-y-2">
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-sm h-auto py-2"
+                            onClick={() => setActiveSection("market-dashboard")}
+                          >
+                            <BarChart3 className="h-4 w-4 mr-2" />
+                            Market Dashboard
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-sm h-auto py-2"
+                            onClick={() => setActiveSection("housing-analyzer")}
+                          >
+                            <Home className="h-4 w-4 mr-2" />
+                            Housing Analysis
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-sm h-auto py-2"
+                            onClick={() => setActiveSection("benefits-finder")}
+                          >
+                            <Gift className="h-4 w-4 mr-2" />
+                            Find Benefits
+                          </Button>
+                        </div>
+                      </MobileOptimizedCard>
+                      <ExportButton 
+                        filename="economic-news-summary"
+                        title="Economic News Summary"
+                        variant="default"
+                        size="default"
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </section>
