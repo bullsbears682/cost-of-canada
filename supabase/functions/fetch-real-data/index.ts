@@ -27,8 +27,16 @@ serve(async (req) => {
   }
 
   try {
+    let dataType;
+    
+    // Try to get dataType from URL params first, then from request body
     const url = new URL(req.url);
-    const dataType = url.searchParams.get('type');
+    dataType = url.searchParams.get('type');
+    
+    if (!dataType) {
+      const body = await req.json().catch(() => ({}));
+      dataType = body.type;
+    }
 
     console.log(`Fetching real data for type: ${dataType}`);
 
