@@ -1,0 +1,26 @@
+{
+  "appId": "com.maplemetrics.app",
+  "appName": "MapleMetrics",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "minSdkVersion": 24,
+  "compileSdkVersion": 34,
+  "targetSdkVersion": 34,
+  "packageName": "com.maplemetrics.app",
+  "applicationId": "com.maplemetrics.app",
+  "permissions": [
+    "android.permission.INTERNET",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACCESS_WIFI_STATE"
+  ],
+  "buildTypes": {
+    "release": {
+      "minifyEnabled": true,
+      "shrinkResources": true,
+      "proguardFiles": [
+        "proguard-android-optimize.txt",
+        "proguard-rules.pro"
+      ]
+    }
+  }
+}
