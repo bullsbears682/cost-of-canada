@@ -134,14 +134,45 @@ All colors MUST be HSL.
     /* Prevent zoom on input focus on iOS */
     font-size: 16px;
   }
+}
+
+/* Mobile-specific improvements - moved outside @layer to avoid nesting issues */
+@media (max-width: 768px) {
+  body {
+    /* Improve scrolling performance */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
   
-  /* Mobile-specific improvements */
-  @media (max-width: 768px) {
-    body {
-      /* Improve scrolling performance */
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: contain;
-    }
+  .mobile-scale-tap {
+    transition: transform 0.15s ease-out;
+  }
+  
+  .mobile-scale-tap:active {
+    transform: scale(0.98);
+  }
+  
+  .mobile-focus:focus-visible {
+    outline: 2px solid hsl(var(--primary) / 0.5);
+    outline-offset: 2px;
+  }
+  
+  .card-micro:active {
+    transform: scale(0.99);
+  }
+  
+  .mobile-input {
+    min-height: 48px;
+    padding: 0 1rem;
+    font-size: 16px;
+  }
+}
+
+/* Desktop-specific hover effects */
+@media (min-width: 769px) {
+  .card-micro:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -194,13 +225,6 @@ All colors MUST be HSL.
     will-change: transform;
   }
   
-  /* Mobile-optimized animations */
-  .mobile-scale-tap {
-    @media (max-width: 768px) {
-      @apply active:scale-[0.98] transition-transform duration-150;
-    }
-  }
-  
   /* Hide scrollbar but keep functionality */
   .hide-scrollbar {
     -ms-overflow-style: none;
@@ -211,42 +235,130 @@ All colors MUST be HSL.
     display: none;
   }
   
-  /* Mobile-friendly focus styles */
-  .mobile-focus {
-    @media (max-width: 768px) {
-      @apply focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2;
-    }
+  /* Advanced Micro-Interactions */
+  .micro-bounce {
+    animation: microBounce 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
+  
+  .micro-pulse {
+    animation: microPulse 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .micro-shake {
+    animation: microShake 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .micro-glow {
+    animation: microGlow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .micro-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .micro-ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  .micro-ripple:active::before {
+    width: 200px;
+    height: 200px;
+  }
+  
+  /* Swipe Visual Feedback */
+  .swipe-indicator {
+    position: relative;
+  }
+  
+  .swipe-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(var(--primary), 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-out;
+  }
+  
+  .swipe-indicator.swiping::after {
+    transform: translateX(100%);
+  }
+  
+  /* Pull-to-refresh indicator */
+  .pull-indicator {
+    transform: rotate(var(--pull-rotation, 0deg));
+    transition: transform 0.1s ease-out;
+  }
+  
+  /* Success/Error feedback */
+  .feedback-success {
+    animation: feedbackSuccess 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  .feedback-error {
+    animation: feedbackError 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Number counting animations */
+  .count-up {
+    animation: countUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  /* Page transition effects */
+  .page-slide-left {
+    animation: pageSlideLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .page-slide-right {
+    animation: pageSlideRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .page-fade-in {
+    animation: pageFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Staggered list animations */
+  .stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: staggerFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  
+  .stagger-item:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(7) { animation-delay: 0.35s; }
+  .stagger-item:nth-child(8) { animation-delay: 0.4s; }
 }
 
 /* Component-specific mobile improvements */
 @layer components {
   /* Enhanced card hover effects for mobile */
   .mobile-card {
-    @apply transition-all duration-200 touch-manipulation;
-    
-    @media (max-width: 768px) {
-      @apply active:scale-[0.99] active:shadow-sm;
-    }
-    
-    @media (min-width: 769px) {
-      @apply hover:shadow-lg hover:shadow-primary/5;
-    }
-  }
-  
-  /* Mobile-optimized input fields */
-  .mobile-input {
-    @apply touch-manipulation;
-    font-size: 16px; /* Prevent zoom on iOS */
-    
-    @media (max-width: 768px) {
-      @apply min-h-[48px] px-4 text-base;
-    }
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: manipulation;
   }
   
   /* Mobile navigation improvements */
   .mobile-nav {
-    @apply backdrop-blur-lg bg-background/95 border-t border-border/50;
+    backdrop-filter: blur(16px);
+    background: hsl(var(--background) / 0.95);
+    border-top: 1px solid hsl(var(--border) / 0.5);
     
     /* Add safe area padding for devices with home indicators */
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
@@ -254,10 +366,131 @@ All colors MUST be HSL.
   
   /* Mobile header improvements */
   .mobile-header {
-    @apply backdrop-blur-md bg-background/90 border-b border-border/50;
+    backdrop-filter: blur(12px);
+    background: hsl(var(--background) / 0.9);
+    border-bottom: 1px solid hsl(var(--border) / 0.5);
     
     /* Add safe area padding for devices with notches */
     padding-top: calc(0.75rem + env(safe-area-inset-top));
+  }
+  
+  /* Advanced button micro-interactions */
+  .button-micro {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .button-micro::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+  }
+  
+  .button-micro:active::before {
+    width: 200%;
+    height: 200%;
+  }
+  
+  /* Card micro-interactions */
+  .card-micro {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+    transform: translateZ(0);
+  }
+  
+  /* Input field micro-interactions */
+  .input-micro {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    touch-action: manipulation;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .input-micro::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: hsl(var(--primary));
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .input-micro:focus::after {
+    transform: scaleX(1);
+  }
+  
+  /* Floating action button micro-interactions */
+  .fab-micro {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(var(--primary), 0.3);
+    transform: translateZ(0);
+  }
+  
+  .fab-micro:hover {
+    transform: translateY(-2px) scale(1.05) translateZ(0);
+    box-shadow: 0 8px 24px rgba(var(--primary), 0.4);
+  }
+  
+  .fab-micro:active {
+    transform: scale(0.95) translateZ(0);
+    box-shadow: 0 2px 8px rgba(var(--primary), 0.3);
+  }
+  
+  /* Tab switching micro-interactions */
+  .tab-micro {
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .tab-micro::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: hsl(var(--primary));
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .tab-micro.active::after {
+    transform: scaleX(1);
+  }
+  
+  .tab-micro:hover {
+    background: hsl(var(--accent) / 0.1);
+  }
+  
+  /* Progress bar micro-interactions */
+  .progress-micro {
+    overflow: hidden;
+    background: hsl(var(--muted));
+    border-radius: 9999px;
+    position: relative;
+  }
+  
+  .progress-micro::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--progress, 0%);
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    border-radius: inherit;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -275,19 +508,143 @@ All colors MUST be HSL.
   /* Dark mode improvements for mobile */
   @media (prefers-color-scheme: dark) {
     .dark-auto {
-      @apply dark;
+      color-scheme: dark;
     }
   }
 }
 
+/* Keyframe Definitions */
+@keyframes microBounce {
+  0%, 100% { transform: scale(1) translateZ(0); }
+  50% { transform: scale(1.05) translateZ(0); }
+}
+
+@keyframes microPulse {
+  0%, 100% { 
+    transform: scale(1) translateZ(0); 
+    box-shadow: 0 0 0 0 rgba(var(--primary), 0.4);
+  }
+  50% { 
+    transform: scale(1.02) translateZ(0); 
+    box-shadow: 0 0 0 10px rgba(var(--primary), 0);
+  }
+}
+
+@keyframes microShake {
+  0%, 100% { transform: translateX(0) translateZ(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px) translateZ(0); }
+  20%, 40%, 60%, 80% { transform: translateX(2px) translateZ(0); }
+}
+
+@keyframes microGlow {
+  0%, 100% { 
+    box-shadow: 0 0 5px rgba(var(--primary), 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 20px rgba(var(--primary), 0.6), 0 0 30px rgba(var(--primary), 0.4);
+  }
+}
+
+@keyframes feedbackSuccess {
+  0% { transform: scale(1) translateZ(0); }
+  50% { transform: scale(1.1) translateZ(0); }
+  100% { transform: scale(1) translateZ(0); }
+}
+
+@keyframes feedbackError {
+  0%, 100% { transform: translateX(0) translateZ(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px) translateZ(0); }
+  20%, 40%, 60%, 80% { transform: translateX(4px) translateZ(0); }
+}
+
+@keyframes countUp {
+  0% { 
+    transform: scale(0.8) translateZ(0); 
+    opacity: 0; 
+  }
+  50% { 
+    transform: scale(1.1) translateZ(0); 
+    opacity: 1; 
+  }
+  100% { 
+    transform: scale(1) translateZ(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes pageSlideLeft {
+  0% { 
+    transform: translateX(-100%) translateZ(0); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateX(0) translateZ(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes pageSlideRight {
+  0% { 
+    transform: translateX(100%) translateZ(0); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateX(0) translateZ(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes pageFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateY(10px) translateZ(0); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) translateZ(0); 
+  }
+}
+
+@keyframes staggerFadeIn {
+  0% { 
+    opacity: 0; 
+    transform: translateY(20px) translateZ(0); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) translateZ(0); 
+  }
+}
+
+/* Loading Skeleton with micro-interactions */
+@keyframes skeletonShimmer {
+  0% { 
+    background-position: -200px 0; 
+  }
+  100% { 
+    background-position: calc(200px + 100%) 0; 
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, 
+    hsl(var(--muted)) 25%, 
+    hsl(var(--muted-foreground) / 0.1) 50%, 
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200px 100%;
+  animation: skeletonShimmer 1.5s infinite;
+}
+
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
 }
 
 @keyframes pulse-glow {
-  0% { box-shadow: 0 0 20px hsl(var(--primary) / 0.4); }
-  100% { box-shadow: 0 0 40px hsl(var(--primary) / 0.8); }
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.4); }
+  50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.8), 0 0 60px hsl(var(--primary) / 0.4); }
 }
 
 @keyframes fade-in {
