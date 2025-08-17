@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, LogOut, Home, Calculator, BarChart3, MapPin, TrendingUp, Gift, DollarSign, PiggyBank, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Menu, User, LogOut, Home, Calculator, BarChart3, MapPin, TrendingUp, Gift, DollarSign, PiggyBank, Zap, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 
@@ -14,6 +14,9 @@ interface MobileHeaderProps {
 const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSection }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   const menuItems = [
     { id: "market-dashboard", label: "Market Dashboard", icon: BarChart3, path: "/market-dashboard" },
@@ -30,6 +33,16 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
     <div className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border shadow-sm">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
+          {!isHomePage && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate(-1)}
+              className="p-2 hover:bg-accent"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
           <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain animate-fade-in" />
           <span className="font-bold text-lg text-foreground">MapleMetrics</span>
         </div>

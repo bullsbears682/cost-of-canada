@@ -1,21 +1,37 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Crown, User, LogOut } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Crown, User, LogOut, ArrowLeft } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 
 const PageHeader = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
-            <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain" />
-            <span className="font-bold text-xl text-foreground">MapleMetrics</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            {!isHomePage && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 hover:bg-accent"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+            )}
+            <Link to="/" className="flex items-center gap-3">
+              <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain" />
+              <span className="font-bold text-xl text-foreground">MapleMetrics</span>
+            </Link>
+          </div>
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-3">
