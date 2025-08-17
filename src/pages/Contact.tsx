@@ -55,7 +55,14 @@ const Contact = () => {
                   Contact Us
                 </CardTitle>
                 <p className="text-muted-foreground">
-                  We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                  We'd love to hear from you. Send us a message and we'll respond as soon as possible. You can also email us directly at
+                  {' '}
+                  <a
+                    href="mailto:support@maplemetrics.site"
+                    className="text-primary underline underline-offset-4"
+                  >
+                    support@maplemetrics.site
+                  </a>.
                 </p>
               </CardHeader>
               <CardContent>

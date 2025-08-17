@@ -45,6 +45,12 @@ const SupportFooter = () => {
               <Link to="/contact" className="block text-muted-foreground hover:text-foreground transition-colors">
                 Contact Us
               </Link>
+              <a
+                href="mailto:support@maplemetrics.site"
+                className="block text-muted-foreground hover:text-foreground transition-colors"
+              >
+                support@maplemetrics.site
+              </a>
               <Link to="/about" className="block text-muted-foreground hover:text-foreground transition-colors">
                 About
               </Link>

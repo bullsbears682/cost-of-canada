@@ -69,7 +69,16 @@ const TermsOfService = () => {
 
               <section>
                 <h2 className="text-xl font-semibold mb-3">9. Contact Information</h2>
-                <p>If you have any questions about these Terms, please contact us through our support page.</p>
+                <p>
+                  If you have any questions about these Terms, please contact us through our support page or email us at
+                  {' '}
+                  <a
+                    href="mailto:support@maplemetrics.site"
+                    className="text-primary underline underline-offset-4"
+                  >
+                    support@maplemetrics.site
+                  </a>.
+                </p>
               </section>
             </CardContent>
           </Card>

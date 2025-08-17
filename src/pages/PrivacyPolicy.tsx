@@ -70,7 +70,16 @@ const PrivacyPolicy = () => {
 
               <section>
                 <h2 className="text-xl font-semibold mb-3">7. Contact Us</h2>
-                <p>If you have any questions about this privacy policy, please contact us through our support page.</p>
+                <p>
+                  If you have any questions about this privacy policy, please contact us through our support page or email us at
+                  {' '}
+                  <a
+                    href="mailto:support@maplemetrics.site"
+                    className="text-primary underline underline-offset-4"
+                  >
+                    support@maplemetrics.site
+                  </a>.
+                </p>
               </section>
             </CardContent>
           </Card>
