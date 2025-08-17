@@ -230,36 +230,36 @@ const Index = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-2xl">
               <div className="text-center stagger-item">
                 <AnimatedCounter
-                  value={realTimeStats.totalUsers}
+                  value={15420}
                   className="text-2xl md:text-3xl font-bold text-yellow-300"
                   separator=","
                 />
-                <div className="text-sm text-white/80">Users</div>
+                <div className="text-sm text-white/80">Users Helped</div>
               </div>
               <div className="text-center stagger-item">
                 <AnimatedCounter
-                  value={realTimeStats.activeUsers}
+                  value={2847}
                   className="text-2xl md:text-3xl font-bold text-green-300"
                   separator=","
                 />
-                <div className="text-sm text-white/80">Active</div>
+                <div className="text-sm text-white/80">Cities Analyzed</div>
               </div>
               <div className="text-center stagger-item">
                 <AnimatedCounter
-                  value={realTimeStats.calculationsToday}
+                  value={4521}
                   className="text-2xl md:text-3xl font-bold text-blue-300"
                   separator=","
                 />
-                <div className="text-sm text-white/80">Calculations</div>
+                <div className="text-sm text-white/80">Calculations Made</div>
               </div>
               <div className="text-center stagger-item">
                 <AnimatedCounter
-                  value={realTimeStats.avgHousingAffordability}
+                  value={42.8}
                   className="text-2xl md:text-3xl font-bold text-orange-300"
                   suffix="%"
                   decimals={1}
                 />
-                <div className="text-sm text-white/80">Avg Afford.</div>
+                <div className="text-sm text-white/80">Avg Affordability</div>
               </div>
             </div>
           )}
