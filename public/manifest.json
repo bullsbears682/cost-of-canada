@@ -1,16 +1,16 @@
 {
   "name": "MapleMetrics - Canadian Housing Affordability",
   "short_name": "MapleMetrics",
-  "description": "Navigate Canada's housing affordability with comprehensive regional analysis and real-time government data",
+  "description": "Navigate Canada's housing affordability with comprehensive regional analysis, retirement planning, and real-time government data",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#dc2626",
+  "background_color": "#1e40af",
+  "theme_color": "#1e40af",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en-CA",
   "dir": "ltr",
-  "categories": ["finance", "business", "utilities"],
+  "categories": ["finance", "business", "utilities", "lifestyle"],
   "icons": [
     {
       "src": "/icon-48.svg",

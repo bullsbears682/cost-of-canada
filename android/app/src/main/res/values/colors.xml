@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MapleMetrics Brand Colors -->
+    <color name="ic_launcher_background">#1e40af</color>
+    <color name="maple_blue">#1e40af</color>
+    <color name="maple_red">#dc2626</color>
+    <color name="maple_white">#ffffff</color>
+    <color name="maple_gold">#f59e0b</color>
+</resources>

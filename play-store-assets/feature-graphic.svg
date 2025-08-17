@@ -1,0 +1,86 @@
+<svg width="1024" height="500" viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f1f5f9;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1024" height="500" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative maple leaves in background -->
+  <g opacity="0.1">
+    <path d="M100,100 L80,120 L120,120 L100,140 L140,160 L100,180 L60,160 Z" fill="#ffffff"/>
+    <path d="M900,80 L880,100 L920,100 L900,120 L940,140 L900,160 L860,140 Z" fill="#ffffff"/>
+    <path d="M850,350 L830,370 L870,370 L850,390 L890,410 L850,430 L810,410 Z" fill="#ffffff"/>
+  </g>
+  
+  <!-- App icon on left -->
+  <g transform="translate(80, 150)">
+    <rect width="120" height="120" rx="24" fill="#ffffff" opacity="0.95"/>
+    <!-- Maple leaf -->
+    <g transform="translate(60, 40)">
+      <path d="M0,-15 L-10,0 L-5,5 L-15,10 L-7,12 L-10,20 L0,15 L10,20 L7,12 L15,10 L5,5 L10,0 Z" 
+            fill="#1e40af"/>
+    </g>
+    <!-- MM text -->
+    <text x="60" y="90" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+          text-anchor="middle" fill="#1e40af">MM</text>
+  </g>
+  
+  <!-- Main title -->
+  <text x="250" y="180" font-family="Arial, sans-serif" font-size="64" font-weight="bold" 
+        fill="url(#textGradient)">MapleMetrics</text>
+  
+  <!-- Subtitle -->
+  <text x="250" y="220" font-family="Arial, sans-serif" font-size="28" font-weight="normal" 
+        fill="#ffffff" opacity="0.9">Navigate Canada's Housing Affordability</text>
+  
+  <!-- Feature highlights -->
+  <g transform="translate(250, 260)">
+    <!-- Housing calculator -->
+    <g>
+      <circle cx="15" cy="15" r="8" fill="#ffffff" opacity="0.8"/>
+      <text x="35" y="20" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">
+        Housing Affordability Calculator</text>
+    </g>
+    
+    <!-- Retirement planner -->
+    <g transform="translate(0, 40)">
+      <circle cx="15" cy="15" r="8" fill="#ffffff" opacity="0.8"/>
+      <text x="35" y="20" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">
+        Retirement Planning Tools</text>
+    </g>
+    
+    <!-- Real-time data -->
+    <g transform="translate(0, 80)">
+      <circle cx="15" cy="15" r="8" fill="#ffffff" opacity="0.8"/>
+      <text x="35" y="20" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">
+        Real-time Government Data</text>
+    </g>
+  </g>
+  
+  <!-- Canadian flag accent -->
+  <g transform="translate(850, 400)">
+    <rect width="60" height="30" fill="#dc2626"/>
+    <rect x="20" y="0" width="20" height="30" fill="#ffffff"/>
+    <!-- Small maple leaf on flag -->
+    <g transform="translate(30, 15)">
+      <path d="M0,-6 L-4,0 L-2,2 L-6,4 L-3,5 L-4,8 L0,6 L4,8 L3,5 L6,4 L2,2 L4,0 Z" 
+            fill="#dc2626"/>
+    </g>
+  </g>
+  
+  <!-- App store badge area indicator -->
+  <text x="850" y="50" font-family="Arial, sans-serif" font-size="16" fill="#ffffff" 
+        opacity="0.7" text-anchor="middle">Get it on</text>
+  <text x="850" y="75" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">Google Play</text>
+</svg>

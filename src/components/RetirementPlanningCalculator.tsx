@@ -7,7 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, TrendingUp, PiggyBank, Home, MapPin, AlertTriangle } from "lucide-react";
+import { Calculator, TrendingUp, PiggyBank, Home, MapPin, AlertTriangle, DollarSign, Calendar, Percent } from "lucide-react";
+import MobileFloatingInput from "@/components/MobileFloatingInput";
+import MobileHelpSystem from "@/components/MobileHelpSystem";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface RetirementInputs {
   currentAge: number;
@@ -58,6 +61,8 @@ const RetirementPlanningCalculator = () => {
   });
 
   const [results, setResults] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("inputs");
+  const isMobile = useIsMobile();
 
   const calculateRetirement = () => {
     // Input validation
@@ -158,6 +163,9 @@ const RetirementPlanningCalculator = () => {
         </p>
       </div>
 
+      {/* Mobile Help System */}
+      <MobileHelpSystem currentPage="retirement-planner" />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Panel */}
         <Card className="shadow-elegant border-0">
@@ -171,65 +179,126 @@ const RetirementPlanningCalculator = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="currentAge">Current Age</Label>
-                <Input
-                  id="currentAge"
+            {isMobile ? (
+              // Mobile-optimized layout with floating inputs
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <MobileFloatingInput
+                    label="Current Age"
+                    type="number"
+                    value={inputs.currentAge}
+                    onChange={(e) => setInputs({...inputs, currentAge: parseInt(e.target.value) || 0})}
+                    min="18"
+                    max="80"
+                    icon={<Calendar className="h-4 w-4" />}
+                  />
+                  <MobileFloatingInput
+                    label="Retirement Age"
+                    type="number"
+                    value={inputs.retirementAge}
+                    onChange={(e) => setInputs({...inputs, retirementAge: parseInt(e.target.value) || 0})}
+                    min="50"
+                    max="80"
+                    icon={<Calendar className="h-4 w-4" />}
+                  />
+                </div>
+
+                <MobileFloatingInput
+                  label="Current Savings"
                   type="number"
-                  value={inputs.currentAge}
-                  onChange={(e) => setInputs({...inputs, currentAge: parseInt(e.target.value)})}
-                  min="18"
-                  max="80"
+                  value={inputs.currentSavings}
+                  onChange={(e) => setInputs({...inputs, currentSavings: parseInt(e.target.value) || 0})}
+                  min="0"
+                  placeholder="e.g., 50000"
+                  icon={<DollarSign className="h-4 w-4" />}
+                />
+
+                <MobileFloatingInput
+                  label="Monthly Contribution"
+                  type="number"
+                  value={inputs.monthlyContribution}
+                  onChange={(e) => setInputs({...inputs, monthlyContribution: parseInt(e.target.value) || 0})}
+                  min="0"
+                  placeholder="e.g., 1000"
+                  icon={<DollarSign className="h-4 w-4" />}
+                />
+
+                <MobileFloatingInput
+                  label="Expected Annual Return (%)"
+                  type="number"
+                  value={inputs.expectedReturn}
+                  onChange={(e) => setInputs({...inputs, expectedReturn: parseFloat(e.target.value) || 0})}
+                  min="1"
+                  max="15"
+                  step="0.1"
+                  placeholder="e.g., 7"
+                  icon={<Percent className="h-4 w-4" />}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="retirementAge">Retirement Age</Label>
-                <Input
-                  id="retirementAge"
-                  type="number"
-                  value={inputs.retirementAge}
-                  onChange={(e) => setInputs({...inputs, retirementAge: parseInt(e.target.value)})}
-                  min="50"
-                  max="80"
-                />
+            ) : (
+              // Desktop layout (existing)
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentAge">Current Age</Label>
+                    <Input
+                      id="currentAge"
+                      type="number"
+                      value={inputs.currentAge}
+                      onChange={(e) => setInputs({...inputs, currentAge: parseInt(e.target.value)})}
+                      min="18"
+                      max="80"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="retirementAge">Retirement Age</Label>
+                    <Input
+                      id="retirementAge"
+                      type="number"
+                      value={inputs.retirementAge}
+                      onChange={(e) => setInputs({...inputs, retirementAge: parseInt(e.target.value)})}
+                      min="50"
+                      max="80"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="currentSavings">Current Savings ($)</Label>
+                  <Input
+                    id="currentSavings"
+                    type="number"
+                    value={inputs.currentSavings}
+                    onChange={(e) => setInputs({...inputs, currentSavings: parseInt(e.target.value)})}
+                    min="0"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="monthlyContribution">Monthly Contribution ($)</Label>
+                  <Input
+                    id="monthlyContribution"
+                    type="number"
+                    value={inputs.monthlyContribution}
+                    onChange={(e) => setInputs({...inputs, monthlyContribution: parseInt(e.target.value)})}
+                    min="0"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="expectedReturn">Expected Annual Return (%)</Label>
+                  <Input
+                    id="expectedReturn"
+                    type="number"
+                    value={inputs.expectedReturn}
+                    onChange={(e) => setInputs({...inputs, expectedReturn: parseFloat(e.target.value)})}
+                    min="1"
+                    max="15"
+                    step="0.1"
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="currentSavings">Current Savings ($)</Label>
-              <Input
-                id="currentSavings"
-                type="number"
-                value={inputs.currentSavings}
-                onChange={(e) => setInputs({...inputs, currentSavings: parseInt(e.target.value)})}
-                min="0"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="monthlyContribution">Monthly Contribution ($)</Label>
-              <Input
-                id="monthlyContribution"
-                type="number"
-                value={inputs.monthlyContribution}
-                onChange={(e) => setInputs({...inputs, monthlyContribution: parseInt(e.target.value)})}
-                min="0"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="expectedReturn">Expected Annual Return (%)</Label>
-              <Input
-                id="expectedReturn"
-                type="number"
-                value={inputs.expectedReturn}
-                onChange={(e) => setInputs({...inputs, expectedReturn: parseFloat(e.target.value)})}
-                min="1"
-                max="15"
-                step="0.1"
-              />
-            </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="province">Retirement Province</Label>

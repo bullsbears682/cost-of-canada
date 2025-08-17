@@ -1,7 +1,17 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MapleMetrics</string>
     <string name="title_activity_main">MapleMetrics</string>
     <string name="package_name">com.maplemetrics.app</string>
     <string name="custom_url_scheme">com.maplemetrics.app</string>
+    
+    <!-- App descriptions -->
+    <string name="app_description">Navigate Canada\'s housing affordability with comprehensive regional analysis, retirement planning, and real-time government data</string>
+    <string name="app_short_description">Canadian Housing Affordability &amp; Retirement Planning</string>
+    
+    <!-- Feature descriptions -->
+    <string name="housing_calculator_desc">Calculate housing affordability across Canadian provinces</string>
+    <string name="retirement_planner_desc">Plan your retirement with inflation-adjusted projections</string>
+    <string name="market_dashboard_desc">View real-time Canadian housing market data</string>
+    <string name="benefits_finder_desc">Find government benefits you\'re eligible for</string>
 </resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Maple Leaf Shape -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.9"
+        android:pathData="M54,25 L45,35 L63,35 Z"/>
+    
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.7"
+        android:pathData="M54,35 L40,45 L68,45 Z"/>
+    
+    <!-- MM Text -->
+    <group android:translateX="54" android:translateY="65">
+        <!-- First M -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M-20,-8 L-20,8 L-16,8 L-16,0 L-12,8 L-8,8 L-4,0 L-4,8 L0,8 L0,-8 L-6,-8 L-10,2 L-14,-8 Z"/>
+        
+        <!-- Second M -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M4,-8 L4,8 L8,8 L8,0 L12,8 L16,8 L20,0 L20,8 L24,8 L24,-8 L18,-8 L14,2 L10,-8 Z"/>
+    </group>
+    
+    <!-- Small decorative elements -->
+    <circle
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.3"
+        android:cx="30"
+        android:cy="30"
+        android:radius="2"/>
+    
+    <circle
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.3"
+        android:cx="78"
+        android:cy="30"
+        android:radius="2"/>
+</vector>
