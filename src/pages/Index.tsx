@@ -11,12 +11,15 @@ import { GovernmentBenefitsFinder } from "@/components/GovernmentBenefitsFinder"
 import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
 import RetirementPlanningCalculator from "@/components/RetirementPlanningCalculator";
+import RealDataIndicator from "@/components/RealDataIndicator";
+import { useRealData } from "@/hooks/useRealData";
 import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "@/assets/logo-handmade.png";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
+  const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -151,7 +154,18 @@ const Index = () => {
 
       {/* Enhanced Dynamic Content Section */}
       <section className="py-20 bg-gradient-subtle">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 space-y-6">
+          {/* Real Data Indicator */}
+          <div className="max-w-4xl mx-auto">
+            <RealDataIndicator
+              lastUpdated={lastUpdated}
+              isLoading={loading}
+              onRefresh={refetch}
+              sources={['Statistics Canada', 'Bank of Canada', 'CMHC']}
+              error={error}
+            />
+          </div>
+          
           <div className="animate-fade-in">
             {activeSection === "market-dashboard" && <RealTimeMarketDashboard />}
             {activeSection === "retirement-planner" && <RetirementPlanningCalculator />}
