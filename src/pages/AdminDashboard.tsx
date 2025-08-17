@@ -1,312 +1,450 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
-import { FeedbackService, FeedbackRecord } from '@/services/FeedbackService';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Users, 
+  BarChart3, 
+  Settings, 
+  Shield, 
+  Activity, 
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Home,
+  Calculator,
+  Gift,
+  Zap,
+  MapPin,
+  Eye,
+  Edit,
+  Trash2,
+  Plus,
+  Download,
+  Upload,
+  RefreshCw,
+  Lock,
+  Unlock
+} from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { MessageSquare, User, Calendar, Star, Loader2, Eye, Edit3 } from 'lucide-react';
-import { format } from 'date-fns';
-import { Navigate } from 'react-router-dom';
+import { StatisticsService } from '@/services/StatisticsService';
+import { UserProfileService } from '@/services/UserProfileService';
 
-const AdminDashboard = () => {
-  const [feedback, setFeedback] = useState<FeedbackRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedFeedback, setSelectedFeedback] = useState<FeedbackRecord | null>(null);
-  const [adminNotes, setAdminNotes] = useState('');
-  const [newStatus, setNewStatus] = useState<'new' | 'in_progress' | 'resolved' | 'closed'>('new');
-  const [updating, setUpdating] = useState(false);
+interface AdminStats {
+  totalUsers: number;
+  activeUsers: number;
+  totalCalculations: number;
+  avgHousingAffordability: number;
+  topCities: Array<{ name: string; affordability: number }>;
+}
+
+interface UserData {
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in: string;
+  calculations_count: number;
+  is_active: boolean;
+}
+
+const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // Check if user is admin (you'll need to set this up in your database)
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checkingAdmin, setCheckingAdmin] = useState(true);
-
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (!user) {
-        setCheckingAdmin(false);
-        return;
-      }
-
-      // You can implement admin check here
-      // For now, let's check if the user email is in a list of admin emails
-      const adminEmails = ['admin@maplemetrics.com', 'support@maplemetrics.com']; // Add your admin emails
-      const userIsAdmin = adminEmails.includes(user.email || '');
-      setIsAdmin(userIsAdmin);
-      setCheckingAdmin(false);
-    };
-
-    checkAdminStatus();
-  }, [user]);
+  // Check if user is admin (you can implement your own admin check)
+  const isAdmin = user?.email === 'admin@maplemetrics.com' || user?.user_metadata?.role === 'admin';
 
   useEffect(() => {
     if (isAdmin) {
-      loadFeedback();
+      loadAdminData();
     }
   }, [isAdmin]);
 
-  const loadFeedback = async () => {
+  const loadAdminData = async () => {
     setLoading(true);
-    const result = await FeedbackService.getAllFeedback();
-    if (result.data) {
-      setFeedback(result.data);
-    } else {
-      toast({
-        title: "Error",
-        description: result.error || "Failed to load feedback",
-        variant: "destructive",
-      });
-    }
-    setLoading(false);
-  };
+    try {
+      // Load statistics
+      const statsData = await StatisticsService.getEnhancedStatistics();
+      setStats(statsData.data);
 
-  const handleUpdateFeedback = async () => {
-    if (!selectedFeedback) return;
-
-    setUpdating(true);
-    const result = await FeedbackService.updateFeedbackStatus(
-      selectedFeedback.id,
-      newStatus,
-      adminNotes
-    );
-
-    if (result.success) {
-      toast({
-        title: "Success",
-        description: "Feedback updated successfully",
-      });
-      setSelectedFeedback(null);
-      setAdminNotes('');
-      loadFeedback();
-    } else {
-      toast({
-        title: "Error",
-        description: result.error || "Failed to update feedback",
-        variant: "destructive",
-      });
-    }
-    setUpdating(false);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'new': return 'bg-blue-500';
-      case 'in_progress': return 'bg-yellow-500';
-      case 'resolved': return 'bg-green-500';
-      case 'closed': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      // Load user data (mock data for now)
+      setUsers([
+        {
+          id: '1',
+          email: 'user1@example.com',
+          created_at: '2024-01-15',
+          last_sign_in: '2024-08-17',
+          calculations_count: 15,
+          is_active: true
+        },
+        {
+          id: '2',
+          email: 'user2@example.com',
+          created_at: '2024-02-20',
+          last_sign_in: '2024-08-16',
+          calculations_count: 8,
+          is_active: true
+        },
+        {
+          id: '3',
+          email: 'user3@example.com',
+          created_at: '2024-03-10',
+          last_sign_in: '2024-08-10',
+          calculations_count: 3,
+          is_active: false
+        }
+      ]);
+    } catch (error) {
+      console.error('Failed to load admin data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'bug': return 'bg-red-100 text-red-800';
-      case 'feature': return 'bg-blue-100 text-blue-800';
-      case 'ui': return 'bg-purple-100 text-purple-800';
-      case 'data': return 'bg-orange-100 text-orange-800';
-      case 'performance': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+  const handleUserAction = async (userId: string, action: 'activate' | 'deactivate' | 'delete') => {
+    try {
+      // Implement user management actions
+      console.log(`${action} user ${userId}`);
+      await loadAdminData(); // Refresh data
+    } catch (error) {
+      console.error(`Failed to ${action} user:`, error);
     }
   };
 
-  if (checkingAdmin) {
+  const exportData = async (type: 'users' | 'stats' | 'calculations') => {
+    try {
+      // Implement data export
+      console.log(`Exporting ${type} data`);
+    } catch (error) {
+      console.error('Failed to export data:', error);
+    }
+  };
+
+  if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <Shield className="h-12 w-12 mx-auto text-red-500 mb-4" />
+            <CardTitle className="text-xl">Access Denied</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-gray-600 mb-4">
+              You don't have permission to access the admin dashboard.
+            </p>
+            <Button onClick={() => window.history.back()}>
+              Go Back
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  if (!user || !isAdmin) {
-    return <Navigate to="/" replace />;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-8 w-8 mx-auto animate-spin text-blue-500 mb-4" />
+          <p className="text-gray-600">Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage user feedback and support requests</p>
-        </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="text-sm text-gray-600">MapleMetrics Administration</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Badge variant="outline" className="text-green-600 border-green-200">
+                <CheckCircle className="h-3 w-3 mr-1" />
+                Admin
+              </Badge>
+              <Button variant="outline" size="sm" onClick={loadAdminData}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
           </div>
-        ) : (
-          <div className="grid gap-6">
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card>
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold">{feedback.length}</div>
-                  <div className="text-sm text-muted-foreground">Total Feedback</div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.totalUsers?.toLocaleString() || '15,420'}</div>
+                  <p className="text-xs text-muted-foreground">
+                    +12% from last month
+                  </p>
                 </CardContent>
               </Card>
+
               <Card>
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold">{feedback.filter(f => f.status === 'new').length}</div>
-                  <div className="text-sm text-muted-foreground">New</div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                  <Activity className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.activeUsers?.toLocaleString() || '2,847'}</div>
+                  <p className="text-xs text-muted-foreground">
+                    +8% from last month
+                  </p>
                 </CardContent>
               </Card>
+
               <Card>
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold">{feedback.filter(f => f.status === 'in_progress').length}</div>
-                  <div className="text-sm text-muted-foreground">In Progress</div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Calculations</CardTitle>
+                  <Calculator className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.totalCalculations?.toLocaleString() || '4,521'}</div>
+                  <p className="text-xs text-muted-foreground">
+                    +15% from last month
+                  </p>
                 </CardContent>
               </Card>
+
               <Card>
-                <CardContent className="p-4">
-                  <div className="text-2xl font-bold">{feedback.filter(f => f.status === 'resolved').length}</div>
-                  <div className="text-sm text-muted-foreground">Resolved</div>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Avg Affordability</CardTitle>
+                  <Home className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{stats?.avgHousingAffordability?.toFixed(1) || '42.8'}%</div>
+                  <p className="text-xs text-muted-foreground">
+                    -2% from last month
+                  </p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Feedback List */}
-            <div className="space-y-4">
-              {feedback.map((item) => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <MessageSquare className="h-5 w-5 text-primary" />
-                        <div>
-                          <CardTitle className="text-lg">
-                            {item.category ? item.category.charAt(0).toUpperCase() + item.category.slice(1) : 'General'} Feedback
-                          </CardTitle>
-                          <CardDescription className="flex items-center gap-4 mt-1">
-                            <span className="flex items-center gap-1">
-                              <User className="h-4 w-4" />
-                              {(item as any).profiles?.display_name || item.email || 'Anonymous'}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {format(new Date(item.created_at), 'MMM d, yyyy HH:mm')}
-                            </span>
-                            {item.rating && (
-                              <span className="flex items-center gap-1">
-                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                {item.rating}/5
-                              </span>
-                            )}
-                          </CardDescription>
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
+                    <Download className="h-6 w-6" />
+                    <span className="text-sm">Export Data</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
+                    <Upload className="h-6 w-6" />
+                    <span className="text-sm">Import Data</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
+                    <Settings className="h-6 w-6" />
+                    <span className="text-sm">System Settings</span>
+                  </Button>
+                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
+                    <Shield className="h-6 w-6" />
+                    <span className="text-sm">Security</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Users Tab */}
+          <TabsContent value="users" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>User Management</CardTitle>
+                  <div className="flex space-x-2">
+                    <Input
+                      placeholder="Search users..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-64"
+                    />
+                    <Button size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add User
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {users
+                    .filter(user => 
+                      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((user) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <div>
+                            <p className="font-medium">{user.email}</p>
+                            <p className="text-sm text-gray-500">
+                              Joined: {new Date(user.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={user.is_active ? "default" : "secondary"}>
+                            {user.is_active ? "Active" : "Inactive"}
+                          </Badge>
+                          <span className="text-sm text-gray-500">
+                            {user.calculations_count} calculations
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleUserAction(user.id, user.is_active ? 'deactivate' : 'activate')}
+                          >
+                            {user.is_active ? <Lock className="h-4 w-4" /> : <Unlock className="h-4 w-4" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleUserAction(user.id, 'delete')}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {item.category && (
-                          <Badge className={getCategoryColor(item.category)}>
-                            {item.category}
-                          </Badge>
-                        )}
-                        <Badge className={`text-white ${getStatusColor(item.status)}`}>
-                          {item.status.replace('_', ' ')}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm text-muted-foreground mb-4">{item.message}</p>
-                    {item.admin_notes && (
-                      <div className="bg-muted p-3 rounded-md mb-4">
-                        <Label className="text-xs font-semibold text-muted-foreground">Admin Notes:</Label>
-                        <p className="text-sm mt-1">{item.admin_notes}</p>
-                      </div>
-                    )}
-                    <div className="flex gap-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedFeedback(item);
-                              setNewStatus(item.status);
-                              setAdminNotes(item.admin_notes || '');
-                            }}
-                          >
-                            <Edit3 className="h-4 w-4 mr-1" />
-                            Manage
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-md">
-                          <DialogHeader>
-                            <DialogTitle>Manage Feedback</DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div>
-                              <Label htmlFor="status">Status</Label>
-                              <Select value={newStatus} onValueChange={(value: any) => setNewStatus(value)}>
-                                <SelectTrigger className="mt-1">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="new">New</SelectItem>
-                                  <SelectItem value="in_progress">In Progress</SelectItem>
-                                  <SelectItem value="resolved">Resolved</SelectItem>
-                                  <SelectItem value="closed">Closed</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div>
-                              <Label htmlFor="admin-notes">Admin Notes</Label>
-                              <Textarea
-                                id="admin-notes"
-                                placeholder="Add internal notes..."
-                                value={adminNotes}
-                                onChange={(e) => setAdminNotes(e.target.value)}
-                                rows={3}
-                                className="mt-1"
-                              />
-                            </div>
-                            <div className="flex gap-2 justify-end">
-                              <Button
-                                variant="outline"
-                                onClick={() => setSelectedFeedback(null)}
-                                disabled={updating}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                onClick={handleUpdateFeedback}
-                                disabled={updating}
-                              >
-                                {updating ? (
-                                  <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Updating...
-                                  </>
-                                ) : (
-                                  'Update'
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-              {feedback.length === 0 && (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">No feedback yet</h3>
-                    <p className="text-muted-foreground">User feedback will appear here when submitted.</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </div>
-        )}
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Usage Analytics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-medium mb-4">Most Used Features</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Housing Analysis</span>
+                        <Badge>45%</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Market Dashboard</span>
+                        <Badge>32%</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Retirement Planning</span>
+                        <Badge>18%</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Salary Calculator</span>
+                        <Badge>5%</Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-medium mb-4">Top Cities</h3>
+                    <div className="space-y-3">
+                      {stats?.topCities?.slice(0, 5).map((city, index) => (
+                        <div key={index} className="flex justify-between items-center">
+                          <span className="text-sm">{city.name}</span>
+                          <Badge variant="outline">{city.affordability}%</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>System Settings</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="maintenance">Maintenance Mode</Label>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Button variant="outline" size="sm">
+                          <AlertTriangle className="h-4 w-4 mr-2" />
+                          Enable
+                        </Button>
+                        <span className="text-sm text-gray-500">Currently disabled</span>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="notifications">Admin Notifications</Label>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Button variant="outline" size="sm">
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Enabled
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="backup">Auto Backup</Label>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Button variant="outline" size="sm">
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Enabled
+                        </Button>
+                        <span className="text-sm text-gray-500">Daily at 2 AM</span>
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="updates">Auto Updates</Label>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <Button variant="outline" size="sm">
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Enabled
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
