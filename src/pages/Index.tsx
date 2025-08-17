@@ -10,9 +10,8 @@ import { TotalCostCalculator } from "@/components/TotalCostCalculator";
 import { GovernmentBenefitsFinder } from "@/components/GovernmentBenefitsFinder";
 import { RealTimeMarketDashboard } from "@/components/RealTimeMarketDashboard";
 import { SalaryRequirementsCalculator } from "@/components/SalaryRequirementsCalculator";
-import InteractiveCanadaMap from "@/components/InteractiveCanadaMap";
 import RetirementPlanningCalculator from "@/components/RetirementPlanningCalculator";
-import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, Map, PiggyBank } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "@/assets/logo-handmade.png";
 
@@ -122,7 +121,6 @@ const Index = () => {
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             {[
               { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "bg-gradient-primary" },
-              { id: "interactive-map", label: "Interactive Map", icon: Map, color: "bg-gradient-primary" },
               { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "bg-gradient-secondary" },
               { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "bg-gradient-secondary" },
               { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "bg-gradient-primary" },
@@ -156,7 +154,6 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="animate-fade-in">
             {activeSection === "market-dashboard" && <RealTimeMarketDashboard />}
-            {activeSection === "interactive-map" && <InteractiveCanadaMap />}
             {activeSection === "retirement-planner" && <RetirementPlanningCalculator />}
             {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
             {activeSection === "salary-calculator" && <SalaryRequirementsCalculator />}
