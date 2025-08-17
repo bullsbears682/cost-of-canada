@@ -17,7 +17,6 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import MobileLayout from "@/components/MobileLayout";
 import MobileButton from "@/components/MobileButton";
-import AnimatedCounter from "@/components/AnimatedCounter";
 import SwipeableToolCard from "@/components/SwipeableToolCard";
 import SupportFooter from "@/components/SupportFooter";
 import { AuthGuard } from "@/components/AuthGuard";
@@ -26,7 +25,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useStaggeredAnimation, usePageTransition } from "@/hooks/useAnimations";
 import { useNavigationSwipe, usePullToRefresh } from "@/hooks/useSwipeGestures";
-import { StatisticsService, RealTimeStats } from "@/services/StatisticsService";
 import { UserProfileService } from "@/services/UserProfileService";
 import UserProfileButton from "@/components/UserProfileButton";
 import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag, Loader2, RefreshCw } from "lucide-react";
@@ -37,8 +35,6 @@ import { cn } from "@/lib/utils";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
-  const [realTimeStats, setRealTimeStats] = useState<RealTimeStats | null>(null);
-  const [statsLoading, setStatsLoading] = useState(true);
   const [favoriteTools, setFavoriteTools] = useState<string[]>([]);
   const [bookmarkedTools, setBookmarkedTools] = useState<string[]>([]);
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
@@ -60,41 +56,12 @@ const Index = () => {
   // Pull to refresh functionality
   const handleRefresh = async () => {
     await refetch();
-    const { data } = await StatisticsService.getEnhancedStatistics();
-    setRealTimeStats(data);
   };
 
   const { ref: pullRef, pullToRefreshStyle, canRefresh, isRefreshing, pullProgress } = usePullToRefresh(handleRefresh);
 
   // Load real-time statistics
   useEffect(() => {
-    const loadStats = async () => {
-      setStatsLoading(true);
-      try {
-        const { data } = await StatisticsService.getEnhancedStatistics();
-        setRealTimeStats(data);
-      } catch (error) {
-        console.error('Failed to load statistics:', error);
-        // Set fallback data on error
-        setRealTimeStats({
-          totalUsers: 15420,
-          activeUsers: 2847,
-          calculationsToday: 4521,
-          avgHousingAffordability: 42.8,
-          topCities: [
-            { name: "Toronto", affordability: 28.5 },
-            { name: "Vancouver", affordability: 31.2 },
-            { name: "Calgary", affordability: 58.7 },
-            { name: "Ottawa", affordability: 45.3 },
-            { name: "Montreal", affordability: 52.1 }
-          ]
-        });
-      } finally {
-        setStatsLoading(false);
-      }
-    };
-
-    loadStats();
     startStagger(); // Start staggered animations
   }, [startStagger]);
 
@@ -226,44 +193,6 @@ const Index = () => {
             </p>
           </div>
 
-          {realTimeStats && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-2xl">
-              <div className="text-center stagger-item">
-                <AnimatedCounter
-                  value={15420}
-                  className="text-2xl md:text-3xl font-bold text-yellow-300"
-                  separator=","
-                />
-                <div className="text-sm text-white/80">Users Helped</div>
-              </div>
-              <div className="text-center stagger-item">
-                <AnimatedCounter
-                  value={2847}
-                  className="text-2xl md:text-3xl font-bold text-green-300"
-                  separator=","
-                />
-                <div className="text-sm text-white/80">Cities Analyzed</div>
-              </div>
-              <div className="text-center stagger-item">
-                <AnimatedCounter
-                  value={4521}
-                  className="text-2xl md:text-3xl font-bold text-blue-300"
-                  separator=","
-                />
-                <div className="text-sm text-white/80">Calculations Made</div>
-              </div>
-              <div className="text-center stagger-item">
-                <AnimatedCounter
-                  value={42.8}
-                  className="text-2xl md:text-3xl font-bold text-orange-300"
-                  suffix="%"
-                  decimals={1}
-                />
-                <div className="text-sm text-white/80">Avg Affordability</div>
-              </div>
-            </div>
-          )}
-
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <MobileButton 
               size="lg" 
@@ -367,7 +296,7 @@ const Index = () => {
     );
   };
 
-  if (loading && !realTimeStats) {
+  if (loading) {
     return (
       <MobileLayout 
         activeSection={activeSection} 
@@ -399,7 +328,7 @@ const Index = () => {
             <RealDataIndicator 
               lastUpdated={lastUpdated} 
               onRefresh={handleRefresh}
-              isLoading={loading || isRefreshing}
+              isLoading={loading}
             />
           </div>
         </div>
