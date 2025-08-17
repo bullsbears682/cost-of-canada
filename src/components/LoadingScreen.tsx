@@ -8,7 +8,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
-        const newProgress = prev + 0.5; // Slower increment for 10-second duration
+        const newProgress = prev + 1; // 1% every 100ms = exactly 10 seconds
         
         // Update building stages based on progress - more spread out timing
         if (newProgress >= 15 && buildingStage === 0) setBuildingStage(1); // Foundation
@@ -24,7 +24,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         }
         return newProgress;
       });
-    }, 50); // Keep same interval but slower increment
+    }, 100); // 100ms interval with 1% increment = exactly 10 seconds
 
     return () => clearInterval(interval);
   }, [buildingStage, onComplete]);
