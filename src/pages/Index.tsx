@@ -17,7 +17,6 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import MobileLayout from "@/components/MobileLayout";
 import MobileButton from "@/components/MobileButton";
-import SwipeableToolCard from "@/components/SwipeableToolCard";
 import SupportFooter from "@/components/SupportFooter";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useRealData } from "@/hooks/useRealData";
@@ -27,7 +26,7 @@ import { useStaggeredAnimation, usePageTransition } from "@/hooks/useAnimations"
 import { useNavigationSwipe, usePullToRefresh } from "@/hooks/useSwipeGestures";
 import { UserProfileService } from "@/services/UserProfileService";
 import UserProfileButton from "@/components/UserProfileButton";
-import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag, Loader2, RefreshCw } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag, Loader2, RefreshCw, Star, Bookmark } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -222,23 +221,106 @@ const Index = () => {
     </div>
   );
 
-  const renderSwipeableTools = () => (
-    <div className="space-y-4">
-      {toolSections.map((section, index) => (
-        <SwipeableToolCard
-          key={section.id}
-          title={section.title}
-          description={section.description}
-          icon={section.icon}
-          color={section.color}
-          onClick={() => handleToolClick(section.id)}
-          onFavorite={() => handleFavorite(section.id)}
-          onBookmark={() => handleBookmark(section.id)}
-          isFavorited={favoriteTools.includes(section.id)}
-          isBookmarked={bookmarkedTools.includes(section.id)}
-          className="stagger-item"
-        />
-      ))}
+  const renderToolGrid = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {toolSections.map((section, index) => {
+        const Icon = section.icon;
+        const isFavorited = favoriteTools.includes(section.id);
+        const isBookmarked = bookmarkedTools.includes(section.id);
+        
+        return (
+          <Card
+            key={section.id}
+            className={cn(
+              "group cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98]",
+              "bg-background border-border/50 hover:border-primary/30",
+              "stagger-item"
+            )}
+            onClick={() => handleToolClick(section.id)}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                {/* Left side - Icon and content */}
+                <div className="flex items-start space-x-4 flex-1 min-w-0">
+                  {/* Icon with gradient background */}
+                  <div className={cn(
+                    "flex items-center justify-center w-12 h-12 rounded-xl shadow-lg transition-all duration-200",
+                    "group-hover:scale-110",
+                    `bg-gradient-to-br ${section.color}`
+                  )}>
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base leading-tight text-foreground mb-1 group-hover:text-primary transition-colors">
+                      {section.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {section.description}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Right side - Action buttons */}
+                <div className="flex flex-col items-end space-y-2 ml-4">
+                  {/* Favorite button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleFavorite(section.id);
+                    }}
+                    className={cn(
+                      "p-2 rounded-lg transition-all duration-200",
+                      "hover:bg-yellow-50 hover:scale-110",
+                      "focus:outline-none focus:ring-2 focus:ring-yellow-500/20",
+                      isFavorited ? "text-yellow-500 bg-yellow-50" : "text-muted-foreground hover:text-yellow-500"
+                    )}
+                    title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    <Star className="h-4 w-4" fill={isFavorited ? "currentColor" : "none"} />
+                  </button>
+                  
+                  {/* Bookmark button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookmark(section.id);
+                    }}
+                    className={cn(
+                      "p-2 rounded-lg transition-all duration-200",
+                      "hover:bg-blue-50 hover:scale-110",
+                      "focus:outline-none focus:ring-2 focus:ring-blue-500/20",
+                      isBookmarked ? "text-blue-500 bg-blue-50" : "text-muted-foreground hover:text-blue-500"
+                    )}
+                    title={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+                  >
+                    <Bookmark className="h-4 w-4" fill={isBookmarked ? "currentColor" : "none"} />
+                  </button>
+                </div>
+              </div>
+              
+              {/* Status indicators */}
+              {(isFavorited || isBookmarked) && (
+                <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-border/50">
+                  {isFavorited && (
+                    <div className="flex items-center space-x-1 text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">
+                      <Star className="h-3 w-3" fill="currentColor" />
+                      <span>Favorited</span>
+                    </div>
+                  )}
+                  {isBookmarked && (
+                    <div className="flex items-center space-x-1 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                      <Bookmark className="h-3 w-3" fill="currentColor" />
+                      <span>Bookmarked</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 
@@ -341,18 +423,16 @@ const Index = () => {
           {renderQuickActions()}
         </div>
 
-        {/* All Tools with Swipe Actions */}
-        {isMobile && (
-          <div className="space-y-4">
-            <h2 className="text-xl md:text-2xl font-bold text-center text-foreground">
-              All Tools
-              <span className="block text-sm font-normal text-muted-foreground mt-1">
-                Swipe cards to favorite or bookmark
-              </span>
-            </h2>
-            {renderSwipeableTools()}
-          </div>
-        )}
+        {/* All Tools with Action Buttons */}
+        <div className="space-y-4">
+          <h2 className="text-xl md:text-2xl font-bold text-center text-foreground">
+            All Tools
+            <span className="block text-sm font-normal text-muted-foreground mt-1">
+              Click the star or bookmark icons to save your favorites
+            </span>
+          </h2>
+          {renderToolGrid()}
+        </div>
 
         {/* Active Section */}
         {renderActiveSection()}
