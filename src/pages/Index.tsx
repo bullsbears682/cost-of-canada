@@ -128,7 +128,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-white text-primary hover:bg-white/90 shadow-2xl hover-lift text-lg px-8 py-6 h-auto mobile-button font-semibold tracking-wide group w-full sm:w-auto" 
-                onClick={() => setActiveSection("housing-analyzer")}
+                onClick={() => window.location.href = "/housing-analyzer"}
               >
                 <Calculator className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform duration-200" />
                 Start Housing Analysis
@@ -137,7 +137,7 @@ const Index = () => {
                 size="lg" 
                 variant="outline" 
                 className="border-2 border-white/80 text-white hover:bg-white hover:text-primary hover-lift text-lg px-8 py-6 h-auto backdrop-blur-sm bg-white/10 mobile-button font-semibold tracking-wide group w-full sm:w-auto" 
-                onClick={() => setActiveSection("benefits-finder")}
+                onClick={() => window.location.href = "/benefits-finder"}
               >
                 <Gift className="h-6 w-6 mr-3 group-hover:scale-110 transition-transform duration-200" />
                 Find Benefits
@@ -245,25 +245,31 @@ const Index = () => {
           
           <div className={`grid gap-6 ${isMobile ? 'grid-cols-2 px-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8'}`}>
             {[
-              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics" },
-              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future" },
-              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting" },
-              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city" },
-              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses" },
-              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown" },
-              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs" },
-              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities" },
-              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights" },
-              { id: "subscriptions", label: "Premium Plans", icon: Crown, color: "from-gradient-primary", desc: "Unlock advanced features" },
-              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates" }
-            ].map(({ id, label, icon: Icon, color, desc }, index) => (
+              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics", path: "/market-dashboard" },
+              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future", path: "/retirement-planner" },
+              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting", path: "/housing-analyzer" },
+              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city", path: "/salary-calculator" },
+              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses", path: "#" },
+              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown", path: "#" },
+              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs", path: "/benefits-finder" },
+              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities", path: "#" },
+              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights", path: "#" },
+              { id: "subscriptions", label: "Premium Plans", icon: Crown, color: "from-gradient-primary", desc: "Unlock advanced features", path: "/subscriptions" },
+              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates", path: "#" }
+            ].map(({ id, label, icon: Icon, color, desc, path }, index) => (
               <Card
                 key={id}
                 className={`group cursor-pointer border-0 bg-gradient-to-br from-white to-gray-50/80 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-3 animate-fade-in overflow-hidden relative ${
                   activeSection === id ? 'ring-2 ring-primary ring-offset-4 shadow-glow scale-105' : ''
                 }`}
                 style={{ animationDelay: `${index * 0.08}s` }}
-                onClick={() => setActiveSection(id)}
+                onClick={() => {
+                  if (path && path !== "#") {
+                    window.location.href = path;
+                  } else {
+                    setActiveSection(id);
+                  }
+                }}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                 <CardHeader className="pb-6 pt-6 relative z-10">

@@ -9,6 +9,12 @@ import LoadingScreen from "./components/LoadingScreen";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./components/AuthPage";
+import MarketDashboard from "./pages/MarketDashboard";
+import HousingAnalyzer from "./pages/HousingAnalyzer";
+import RetirementPlanner from "./pages/RetirementPlanner";
+import SalaryCalculator from "./pages/SalaryCalculator";
+import BenefitsFinder from "./pages/BenefitsFinder";
+import Subscriptions from "./pages/Subscriptions";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +48,12 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/market-dashboard" element={<MarketDashboard />} />
+              <Route path="/housing-analyzer" element={<HousingAnalyzer />} />
+              <Route path="/retirement-planner" element={<RetirementPlanner />} />
+              <Route path="/salary-calculator" element={<SalaryCalculator />} />
+              <Route path="/benefits-finder" element={<BenefitsFinder />} />
+              <Route path="/subscriptions" element={<Subscriptions />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
