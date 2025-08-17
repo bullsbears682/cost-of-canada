@@ -16,8 +16,10 @@ import NewsWidget from "@/components/NewsWidget";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import SubscriptionPlans from "@/components/SubscriptionPlans";
+import MobileHeader from "@/components/MobileHeader";
 import { useRealData } from "@/hooks/useRealData";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Crown, Flag } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
@@ -27,6 +29,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
   const { user, signOut, subscription, refreshSubscription } = useAuth();
+  const isMobile = useIsMobile();
 
   // Handle subscription status from URL params
   useEffect(() => {
@@ -42,48 +45,52 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
-      {/* Navigation Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain" />
-              <span className="font-bold text-xl text-foreground">MapleMetrics</span>
-            </div>
-            <div className="flex items-center gap-4">
-              {user ? (
-                <div className="flex items-center gap-3">
-                  {subscription.subscribed && (
-                    <div className="flex items-center gap-2 px-3 py-1 bg-gradient-primary rounded-full text-white text-sm">
-                      <Crown className="h-4 w-4" />
-                      <span>{subscription.subscription_tier}</span>
-                    </div>
-                  )}
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline">{user.email}</span>
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={signOut}>
-                    <LogOut className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Link to="/auth">
-                    <Button variant="ghost" size="sm">Sign In</Button>
-                  </Link>
-                  <Link to="/auth">
-                    <Button size="sm">Get Started</Button>
-                  </Link>
-                </div>
-              )}
+      {/* Mobile or Desktop Header */}
+      {isMobile ? (
+        <MobileHeader activeSection={activeSection} setActiveSection={setActiveSection} />
+      ) : (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain" />
+                <span className="font-bold text-xl text-foreground">MapleMetrics</span>
+              </div>
+              <div className="flex items-center gap-4">
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    {subscription.subscribed && (
+                      <div className="flex items-center gap-2 px-3 py-1 bg-gradient-primary rounded-full text-white text-sm">
+                        <Crown className="h-4 w-4" />
+                        <span>{subscription.subscription_tier}</span>
+                      </div>
+                    )}
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      <span className="hidden sm:inline">{user.email}</span>
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={signOut}>
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Link to="/auth">
+                      <Button variant="ghost" size="sm">Sign In</Button>
+                    </Link>
+                    <Link to="/auth">
+                      <Button size="sm">Get Started</Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Premium Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-hero min-h-[90vh] flex items-center">
+      <section className={`relative overflow-hidden bg-gradient-hero ${isMobile ? 'min-h-[70vh] pt-16' : 'min-h-[90vh]'} flex items-center`}>
         <div className="absolute inset-0 bg-gradient-glow" />
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08]"
@@ -234,7 +241,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          <div className={`grid gap-6 ${isMobile ? 'grid-cols-2 px-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8'}`}>
             {[
               { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics" },
               { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future" },

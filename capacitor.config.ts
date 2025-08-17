@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.05bbd1a29a81435689ae6ce7cb3599e2',
-  appName: 'MapleMetrics',
+  appName: 'cost-of-canada',
   webDir: 'dist',
   server: {
     url: 'https://05bbd1a2-9a81-4356-89ae-6ce7cb3599e2.lovableproject.com?forceHideBadge=true',
@@ -10,9 +10,9 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 3000,
+      launchShowDuration: 2000,
       launchAutoHide: true,
-      backgroundColor: "#dc2626",
+      backgroundColor: "#1e40af",
       androidSplashResourceName: "splash",
       androidScaleType: "CENTER_CROP",
       showSpinner: false,
@@ -20,8 +20,13 @@ const config: CapacitorConfig = {
       splashImmersive: true,
     },
     StatusBar: {
-      style: 'DARK',
-      backgroundColor: '#dc2626'
+      style: 'LIGHT',
+      backgroundColor: '#1e40af'
+    },
+    Keyboard: {
+      resize: 'body',
+      style: 'dark',
+      resizeOnFullScreen: true
     }
   }
 };

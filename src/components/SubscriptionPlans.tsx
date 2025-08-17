@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Check, Crown, Loader2, Zap, Star } from "lucide-react";
 
 interface Plan {
@@ -77,6 +78,7 @@ const SubscriptionPlans = () => {
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const { user, session, subscription } = useAuth();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const handleSubscribe = async (planId: string, price: number) => {
     if (!user || !session) {
@@ -195,7 +197,7 @@ const SubscriptionPlans = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className={`grid gap-8 max-w-7xl mx-auto ${isMobile ? 'grid-cols-1 px-4' : 'grid-cols-1 md:grid-cols-3'}`}>
           {plans.map((plan, index) => (
             <Card 
               key={plan.id}
