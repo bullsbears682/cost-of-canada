@@ -13,7 +13,7 @@ interface MobileHeaderProps {
 
 const MobileHeader = ({ activeSection, setActiveSection }: MobileHeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, signOut, subscription } = useAuth();
+  const { user, signOut } = useAuth();
 
   const navigationItems = [
     { id: "market-dashboard", label: "Market Dashboard", icon: Home },
@@ -21,7 +21,6 @@ const MobileHeader = ({ activeSection, setActiveSection }: MobileHeaderProps) =>
     { id: "salary-calculator", label: "Salary Calculator", icon: User },
     { id: "comparison", label: "City Comparison", icon: Home },
     { id: "benefits-finder", label: "Benefits Finder", icon: Home },
-    { id: "subscriptions", label: "Premium Plans", icon: Crown },
   ];
 
   const handleNavigation = (sectionId: string) => {
@@ -38,13 +37,6 @@ const MobileHeader = ({ activeSection, setActiveSection }: MobileHeaderProps) =>
         </div>
         
         <div className="flex items-center gap-2">
-          {user && subscription.subscribed && (
-            <div className="hidden xs:flex items-center gap-1 px-2 py-1 bg-gradient-primary rounded-full text-white text-xs">
-              <Crown className="h-3 w-3" />
-              <span>{subscription.subscription_tier}</span>
-            </div>
-          )}
-          
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="p-2">
@@ -67,14 +59,6 @@ const MobileHeader = ({ activeSection, setActiveSection }: MobileHeaderProps) =>
                       <User className="h-5 w-5 text-muted-foreground" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{user.email}</p>
-                        {subscription.subscribed && (
-                          <div className="flex items-center gap-1 mt-1">
-                            <Crown className="h-3 w-3 text-primary" />
-                            <span className="text-xs text-primary font-medium">
-                              {subscription.subscription_tier}
-                            </span>
-                          </div>
-                        )}
                       </div>
                     </div>
                     <Button 

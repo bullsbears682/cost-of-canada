@@ -15,14 +15,12 @@ import RealDataIndicator from "@/components/RealDataIndicator";
 import NewsWidget from "@/components/NewsWidget";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
-import SubscriptionPlans from "@/components/SubscriptionPlans";
 import MobileHeader from "@/components/MobileHeader";
 import { AuthGuard } from "@/components/AuthGuard";
-import { FeatureGate } from "@/components/FeatureGate";
 import { useRealData } from "@/hooks/useRealData";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Crown, Flag, Lock, Unlock } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 import { Link } from "react-router-dom";
@@ -30,29 +28,8 @@ import { Link } from "react-router-dom";
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
-  const { user, signOut, subscription, refreshSubscription } = useAuth();
+  const { user, signOut } = useAuth();
   const isMobile = useIsMobile();
-
-  // Helper function to check if feature is unlocked
-  const isFeatureUnlocked = (requiredTier: string) => {
-    if (!user || !subscription?.subscribed) return false;
-    const tierHierarchy = { 'Essential': 1, 'Professional': 2, 'Expert': 3 };
-    const userTierLevel = tierHierarchy[subscription?.subscription_tier as keyof typeof tierHierarchy] || 0;
-    const requiredTierLevel = tierHierarchy[requiredTier as keyof typeof tierHierarchy] || 0;
-    return userTierLevel >= requiredTierLevel;
-  };
-
-  // Handle subscription status from URL params
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const subscriptionStatus = urlParams.get('subscription');
-    
-    if (subscriptionStatus === 'success') {
-      setTimeout(() => {
-        refreshSubscription();
-      }, 2000);
-    }
-  }, [refreshSubscription]);
 
   return (
     <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
@@ -70,22 +47,6 @@ const Index = () => {
               <div className="flex items-center gap-4">
                 {user ? (
                   <div className="flex items-center gap-3">
-                    {subscription.subscribed && (
-                      <div className="flex items-center gap-2 px-3 py-1 bg-gradient-primary rounded-full text-white text-sm">
-                        <Crown className="h-4 w-4" />
-                        <span>{subscription.subscription_tier}</span>
-                      </div>
-                    )}
-                    {!subscription.subscribed && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={refreshSubscription}
-                        className="text-primary hover:text-primary-dark"
-                      >
-                        Refresh Status
-                      </Button>
-                    )}
                     <Button variant="ghost" size="sm" className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       <span className="hidden sm:inline">{user.email}</span>
@@ -264,75 +225,48 @@ const Index = () => {
           
           <div className={`grid gap-6 ${isMobile ? 'grid-cols-2 px-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8'}`}>
             {[
-              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics", path: "/market-dashboard", tier: "Essential" },
-              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future", path: "/retirement-planner", tier: "Professional" },
-              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting", path: "/housing-analyzer", tier: "Essential" },
-              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city", path: "/salary-calculator", tier: "Professional" },
-              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses", path: "#", tier: "Essential" },
-              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown", path: "#", tier: "Professional" },
-              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs", path: "/benefits-finder", tier: "Essential" },
-              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities", path: "#", tier: "Professional" },
-              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights", path: "#", tier: "Expert" },
-              { id: "subscriptions", label: "Premium Plans", icon: Crown, color: "from-gradient-primary", desc: "Unlock advanced features", path: "/subscriptions", tier: null },
-              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates", path: "#", tier: "Professional" }
-            ].map(({ id, label, icon: Icon, color, desc, path, tier }, index) => {
-              const unlocked = !tier || isFeatureUnlocked(tier);
-              const LockIcon = unlocked ? Unlock : Lock;
+              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics", path: "/market-dashboard" },
+              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future", path: "/retirement-planner" },
+              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting", path: "/housing-analyzer" },
+              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city", path: "/salary-calculator" },
+              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses", path: "#" },
+              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown", path: "#" },
+              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs", path: "/benefits-finder" },
+              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities", path: "#" },
+              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights", path: "#" },
+              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates", path: "#" }
+            ].map(({ id, label, icon: Icon, color, desc, path }, index) => {
               return (
               <Card
                 key={id}
-                className={`group cursor-pointer border-0 bg-gradient-to-br transition-all duration-500 animate-fade-in overflow-hidden relative ${
-                  unlocked 
-                    ? 'from-white to-gray-50/80 shadow-card hover:shadow-elegant hover:-translate-y-3' 
-                    : 'from-gray-100 to-gray-200/80 shadow-sm opacity-75'
-                } ${
+                className={`group cursor-pointer border-0 bg-gradient-to-br transition-all duration-500 animate-fade-in overflow-hidden relative from-white to-gray-50/80 shadow-card hover:shadow-elegant hover:-translate-y-3 ${
                   activeSection === id ? 'ring-2 ring-primary ring-offset-4 shadow-glow scale-105' : ''
                 }`}
                 style={{ animationDelay: `${index * 0.08}s` }}
                 onClick={() => {
-                  if (unlocked && path && path !== "#") {
+                  if (path && path !== "#") {
                     window.location.href = path;
-                  } else if (unlocked) {
+                  } else {
                     setActiveSection(id);
-                  } else if (tier) {
-                    window.location.href = "/subscriptions";
                   }
                 }}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                 <CardHeader className="pb-6 pt-6 relative z-10">
                   <div className="mb-4 relative">
-                    <div className={`w-16 h-16 bg-gradient-to-r ${unlocked ? color : 'from-gray-400 to-gray-500'} rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 mx-auto ${unlocked ? 'group-hover:shadow-glow group-hover:scale-110' : ''}`}>
-                      <Icon className={`h-8 w-8 ${unlocked ? 'text-white' : 'text-gray-300'}`} />
+                    <div className={`w-16 h-16 bg-gradient-to-r ${color} rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 mx-auto group-hover:shadow-glow group-hover:scale-110`}>
+                      <Icon className="h-8 w-8 text-white" />
                     </div>
-                    {tier && (
-                      <div className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center ${
-                        unlocked ? 'bg-green-500' : 'bg-gray-500'
-                      }`}>
-                        <LockIcon className="h-3 w-3 text-white" />
-                      </div>
-                    )}
                     {activeSection === id && (
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full animate-pulse"></div>
                     )}
                   </div>
-                  <CardTitle className={`text-lg font-bold mb-2 transition-colors duration-300 text-center leading-tight ${
-                    unlocked ? 'text-foreground group-hover:text-primary' : 'text-gray-500'
-                  }`}>
+                  <CardTitle className="text-lg font-bold mb-2 transition-colors duration-300 text-center leading-tight text-foreground group-hover:text-primary">
                     {label}
                   </CardTitle>
-                  <CardDescription className={`text-sm leading-snug text-center ${
-                    unlocked ? 'text-muted-foreground' : 'text-gray-400'
-                  }`}>
+                  <CardDescription className="text-sm leading-snug text-center text-muted-foreground">
                     {desc}
                   </CardDescription>
-                  {tier && !unlocked && (
-                    <div className="mt-2 text-center">
-                      <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
-                        Requires {tier}
-                      </span>
-                    </div>
-                  )}
                 </CardHeader>
               </Card>
             );
@@ -361,57 +295,56 @@ const Index = () => {
             ) : (
               <>
                 {activeSection === "market-dashboard" && (
-                  <FeatureGate requiredTier="Essential" toolName="Real-Time Market Dashboard">
+                  <AuthGuard>
                     <RealTimeMarketDashboard />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "retirement-planner" && (
-                  <FeatureGate requiredTier="Professional" toolName="Retirement Planning Calculator">
+                  <AuthGuard>
                     <RetirementPlanningCalculator />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "housing-analyzer" && (
-                  <FeatureGate requiredTier="Essential" toolName="Housing Affordability Analyzer">
+                  <AuthGuard>
                     <HousingAffordabilityAnalyzer />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "salary-calculator" && (
-                  <FeatureGate requiredTier="Professional" toolName="Salary Requirements Calculator">
+                  <AuthGuard>
                     <SalaryRequirementsCalculator />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "utility-optimizer" && (
-                  <FeatureGate requiredTier="Essential" toolName="Utility Cost Optimizer">
+                  <AuthGuard>
                     <UtilityCostOptimizer />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "total-calculator" && (
-                  <FeatureGate requiredTier="Professional" toolName="Total Cost Calculator">
+                  <AuthGuard>
                     <TotalCostCalculator />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "benefits-finder" && (
-                  <FeatureGate requiredTier="Essential" toolName="Government Benefits Finder">
+                  <AuthGuard>
                     <GovernmentBenefitsFinder />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "comparison" && (
-                  <FeatureGate requiredTier="Professional" toolName="Cost Comparison Tool">
+                  <AuthGuard>
                     <CostComparisonTool />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
                 {activeSection === "regional" && (
-                  <FeatureGate requiredTier="Expert" toolName="Regional Overview">
+                  <AuthGuard>
                     <RegionalOverview />
-                  </FeatureGate>
+                  </AuthGuard>
                 )}
-                {activeSection === "subscriptions" && <SubscriptionPlans />}
                 {activeSection === "news" && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
-                      <FeatureGate requiredTier="Professional" toolName="News Widget">
+                      <AuthGuard>
                         <NewsWidget />
-                      </FeatureGate>
+                      </AuthGuard>
                     </div>
                     <div className="space-y-4">
                       <MobileOptimizedCard title="Quick Links">
@@ -439,14 +372,6 @@ const Index = () => {
                           >
                             <Gift className="h-4 w-4 mr-2" />
                             Find Benefits
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start text-sm h-auto py-2"
-                            onClick={() => setActiveSection("subscriptions")}
-                          >
-                            <Crown className="h-4 w-4 mr-2" />
-                            Premium Plans
                           </Button>
                         </div>
                       </MobileOptimizedCard>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FeatureGate } from '@/components/FeatureGate';
+import { AuthGuard } from '@/components/AuthGuard';
 import RetirementPlanningCalculator from '@/components/RetirementPlanningCalculator';
 import PageHeader from '@/components/PageHeader';
 
@@ -9,9 +9,9 @@ const RetirementPlanner = () => {
       <PageHeader />
       <div className="min-h-screen bg-gradient-subtle pt-20 pb-12">
         <div className="container mx-auto px-4">
-          <FeatureGate requiredTier="Professional" toolName="Retirement Planning Calculator">
+          <AuthGuard>
             <RetirementPlanningCalculator />
-          </FeatureGate>
+          </AuthGuard>
         </div>
       </div>
     </>

@@ -7,12 +7,6 @@ interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
-  refreshSubscription: () => Promise<void>;
-  subscription: {
-    subscribed: boolean;
-    subscription_tier: string | null;
-    subscription_end: string | null;
-  };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,47 +27,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [subscription, setSubscription] = useState({
-    subscribed: false,
-    subscription_tier: null as string | null,
-    subscription_end: null as string | null,
-  });
-
-  const refreshSubscription = async () => {
-    if (!session) return;
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('check-subscription', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('Error checking subscription:', error);
-        return;
-      }
-
-      setSubscription({
-        subscribed: data?.subscribed || false,
-        subscription_tier: data?.subscription_tier || null,
-        subscription_end: data?.subscription_end || null,
-      });
-    } catch (error) {
-      console.error('Error refreshing subscription:', error);
-    }
-  };
 
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
-      setSubscription({
-        subscribed: false,
-        subscription_tier: null,
-        subscription_end: null,
-      });
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -86,19 +45,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
-
-        // Refresh subscription data when auth state changes
-        if (session?.user) {
-          setTimeout(() => {
-            refreshSubscription();
-          }, 100);
-        } else {
-          setSubscription({
-            subscribed: false,
-            subscription_tier: null,
-            subscription_end: null,
-          });
-        }
       }
     );
 
@@ -107,12 +53,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
-      
-      if (session?.user) {
-        setTimeout(() => {
-          refreshSubscription();
-        }, 100);
-      }
     });
 
     return () => authSubscription.unsubscribe();
@@ -123,8 +63,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     session,
     isLoading,
     signOut,
-    refreshSubscription,
-    subscription,
   };
 
   return (

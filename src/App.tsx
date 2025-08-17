@@ -14,7 +14,7 @@ import HousingAnalyzer from "./pages/HousingAnalyzer";
 import RetirementPlanner from "./pages/RetirementPlanner";
 import SalaryCalculator from "./pages/SalaryCalculator";
 import BenefitsFinder from "./pages/BenefitsFinder";
-import Subscriptions from "./pages/Subscriptions";
+
 
 const queryClient = new QueryClient();
 
@@ -53,7 +53,6 @@ const App = () => {
               <Route path="/retirement-planner" element={<RetirementPlanner />} />
               <Route path="/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/benefits-finder" element={<BenefitsFinder />} />
-              <Route path="/subscriptions" element={<Subscriptions />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
