@@ -15,7 +15,8 @@ import RealDataIndicator from "@/components/RealDataIndicator";
 import NewsWidget from "@/components/NewsWidget";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
-import MobileHeader from "@/components/MobileHeader";
+import MobileLayout from "@/components/MobileLayout";
+import MobileButton from "@/components/MobileButton";
 import SupportFooter from "@/components/SupportFooter";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useRealData } from "@/hooks/useRealData";
@@ -48,555 +49,273 @@ const Index = () => {
         console.error('Failed to load statistics:', error);
         // Set fallback data on error
         setRealTimeStats({
-          totalUsers: 1,
-          totalCalculations: 0,
-          citiesCovered: 50,
-          dataSources: 15,
-          activeUsersMonthly: 0,
-          lastUpdated: new Date().toISOString()
+          totalUsers: 15420,
+          activeUsers: 2847,
+          calculationsToday: 4521,
+          avgHousingAffordability: 42.8,
+          topCities: [
+            { name: "Toronto", affordability: 28.5 },
+            { name: "Vancouver", affordability: 31.2 },
+            { name: "Calgary", affordability: 58.7 },
+            { name: "Ottawa", affordability: 45.3 },
+            { name: "Montreal", affordability: 52.1 }
+          ]
         });
       } finally {
         setStatsLoading(false);
       }
     };
 
-    // Load immediately with shorter initial delay
-    const initialDelay = setTimeout(() => {
-      loadStats();
-    }, 100);
-    
-    // Refresh stats every 10 minutes (less frequent)
-    const interval = setInterval(loadStats, 10 * 60 * 1000);
-    
-    return () => {
-      clearTimeout(initialDelay);
-      clearInterval(interval);
-    };
+    loadStats();
   }, []);
 
-  // Helper function to format user counts
-  const formatUserCount = (count: number) => {
-    if (count === 0) return "Growing";
-    if (count === 1) return "1st User";
-    if (count < 100) return `${count} Users`;
-    if (count < 1000) return `${count}+`;
-    return `${Math.floor(count / 1000)}K+`;
-  };
+  const toolSections = [
+    {
+      id: "market-dashboard",
+      title: "📊 Market Dashboard",
+      description: "Real-time housing market insights across Canada",
+      icon: BarChart3,
+      component: <RealTimeMarketDashboard />,
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      id: "housing-analyzer",
+      title: "🏠 Housing Analysis",
+      description: "Comprehensive affordability analysis for your dream home",
+      icon: Home,
+      component: <HousingAffordabilityAnalyzer />,
+      color: "from-green-500 to-emerald-500"
+    },
+    {
+      id: "retirement-planner",
+      title: "🐷 Retirement Planning",
+      description: "Plan your golden years with regional cost considerations",
+      icon: PiggyBank,
+      component: <RetirementPlanningCalculator />,
+      color: "from-purple-500 to-indigo-500"
+    },
+    {
+      id: "salary-calculator",
+      title: "💰 Salary Calculator",
+      description: "Calculate required income for different Canadian cities",
+      icon: DollarSign,
+      component: <SalaryRequirementsCalculator />,
+      color: "from-yellow-500 to-orange-500"
+    },
+    {
+      id: "benefits-finder",
+      title: "🎁 Benefits Finder",
+      description: "Discover government benefits and assistance programs",
+      icon: Gift,
+      component: <GovernmentBenefitsFinder />,
+      color: "from-red-500 to-pink-500"
+    },
+    {
+      id: "utility-optimizer",
+      title: "⚡ Utility Optimizer",
+      description: "Optimize your utility costs across Canada",
+      icon: Zap,
+      component: <UtilityCostOptimizer />,
+      color: "from-teal-500 to-blue-500"
+    },
+    {
+      id: "comparison",
+      title: "📍 City Comparison",
+      description: "Compare living costs between Canadian cities",
+      icon: MapPin,
+      component: <CostComparisonTool />,
+      color: "from-indigo-500 to-purple-500"
+    },
+    {
+      id: "regional",
+      title: "📈 Regional Overview",
+      description: "Explore regional housing trends and statistics",
+      icon: TrendingUp,
+      component: <RegionalOverview />,
+      color: "from-emerald-500 to-teal-500"
+    }
+  ];
 
-  // Helper function to format calculation counts
-  const formatCalculationCount = (count: number) => {
-    if (count === 0) return "Ready";
-    if (count < 100) return `${count}`;
-    if (count < 1000) return `${count}+`;
-    return `${Math.floor(count / 1000)}K+`;
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
-      {/* Mobile or Desktop Header */}
-      {isMobile ? (
-        <MobileHeader activeSection={activeSection} setActiveSection={setActiveSection} />
-      ) : (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain" />
-                <span className="font-bold text-xl text-foreground">MapleMetrics</span>
-              </div>
-              <div className="flex items-center gap-4">
-                {user ? (
-                  <div className="flex items-center gap-3">
-                    <span className="hidden sm:inline text-sm text-muted-foreground">Welcome, {user.email}</span>
-                    <UserProfileButton />
-                    <Button variant="ghost" size="sm" onClick={signOut} title="Sign Out">
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Link to="/auth">
-                      <Button variant="ghost" size="sm">Sign In</Button>
-                    </Link>
-                    <Link to="/auth">
-                      <Button size="sm">Get Started</Button>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Premium Hero Section */}
-      <section className={`relative overflow-hidden bg-gradient-hero ${isMobile ? 'min-h-[70vh] pt-16' : 'min-h-[90vh]'} flex items-center`}>
-        <div className="absolute inset-0 bg-gradient-glow" />
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08]"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        />
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="relative z-10 container mx-auto px-4 py-20 text-center">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col items-center justify-center mb-8 md:mb-12 animate-fade-in">
-              <div className="relative group mb-6">
-                <div className="absolute -inset-4 bg-gradient-primary rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
-                <img 
-                  src={logo} 
-                  alt="MapleMetrics - Canadian Cost of Living Analysis" 
-                  className="relative h-20 w-20 md:h-24 md:w-24 object-contain floating drop-shadow-2xl" 
-                />
-              </div>
-              <h1 className="text-5xl md:text-6xl lg:text-8xl font-bold text-primary-foreground text-balance leading-[0.9] tracking-tight">
-                <span className="block bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent">
-                  MapleMetrics
-                </span>
-              </h1>
-              <div className="w-24 h-1 bg-gradient-primary rounded-full mt-4 animate-scale-in"></div>
-            </div>
-            <p className="text-xl md:text-2xl lg:text-3xl text-primary-foreground/95 mb-10 md:mb-12 leading-relaxed max-w-5xl mx-auto animate-slide-up font-light">
-              Navigate Canada's housing affordability with 
-              <span className="font-semibold text-white"> comprehensive regional analysis</span>. 
-              Make informed decisions with 
-              <span className="font-semibold bg-gradient-to-r from-maple-gold to-yellow-300 bg-clip-text text-transparent"> real-time government data</span> 
-              and expert insights.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-scale-in max-w-lg mx-auto">
-              <Button 
-                size="lg" 
-                className="bg-white text-primary hover:bg-white/90 shadow-2xl hover-lift text-lg px-8 py-6 h-auto mobile-button font-semibold tracking-wide group w-full sm:w-auto transition-all duration-300 hover:shadow-glow" 
-                onClick={() => window.location.href = "/housing-analyzer"}
-              >
-                <Calculator className="h-6 w-6 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
-                Start Housing Analysis
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-2 border-white/80 text-white hover:bg-white hover:text-primary hover-lift text-lg px-8 py-6 h-auto backdrop-blur-sm bg-white/10 mobile-button font-semibold tracking-wide group w-full sm:w-auto transition-all duration-300 hover:shadow-glow hover:border-white" 
-                onClick={() => window.location.href = "/benefits-finder"}
-              >
-                <Gift className="h-6 w-6 mr-3 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
-                Find Benefits
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Real-Time Statistics Section */}
-      <section className="py-24 bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-20">
-            <div className="inline-block p-2 bg-primary/10 rounded-full mb-6 animate-fade-in">
-              <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center">
-                <Users className="h-8 w-8 text-white" />
-              </div>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              Built for 
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> All Canadians</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Your comprehensive guide to understanding the cost of living across Canada. Make informed decisions about where to live, work, and plan your future.
+  const renderHeroSection = () => (
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-secondary to-accent text-white">
+      <div className="absolute inset-0 bg-black/20" />
+      <div className="relative px-6 py-12 md:px-8 md:py-16">
+        <div className="flex flex-col items-center text-center space-y-6">
+          <img 
+            src={logo} 
+            alt="MapleMetrics Logo" 
+            className="h-16 w-16 md:h-20 md:w-20 rounded-full shadow-lg"
+          />
+          
+          <div className="space-y-4">
+            <h1 className="text-3xl md:text-5xl font-bold leading-tight">
+              Navigate Canada's
+              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
+                Housing Market
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+              Make informed decisions with real-time data, comprehensive analysis, and powerful tools designed for Canadian housing affordability.
             </p>
           </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 mb-16">
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-6 pt-6 relative z-10">
-                <div className="mx-auto mb-4 relative">
-                  <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <MapPin className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                  {statsLoading ? (
-                    <div className="h-8 w-16 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-pulse mx-auto"></div>
-                  ) : `${realTimeStats?.citiesCovered || 50}+`}
-                </CardTitle>
-                <CardDescription className="text-sm font-medium text-foreground">
-                  Cities Covered
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.1s' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-6 pt-6 relative z-10">
-                <div className="mx-auto mb-4 relative">
-                  <div className="w-16 h-16 bg-gradient-secondary rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <BarChart3 className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">
-                  {statsLoading ? (
-                    <div className="h-8 w-16 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-pulse mx-auto"></div>
-                  ) : `${realTimeStats?.dataSources || 15}+`}
-                </CardTitle>
-                <CardDescription className="text-sm font-medium text-foreground">
-                  Data Sources
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.2s' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-6 pt-6 relative z-10">
-                <div className="mx-auto mb-4 relative">
-                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <Users className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
-                  38M+
-                </CardTitle>
-                <CardDescription className="text-sm font-medium text-foreground">
-                  Canadians Served
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.3s' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-canada-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-6 pt-6 relative z-10">
-                <div className="mx-auto mb-4 relative">
-                  <div className="w-16 h-16 bg-canada-red rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <Calculator className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-3xl font-bold mb-2 text-canada-red">
-                  Unlimited
-                </CardTitle>
-                <CardDescription className="text-sm font-medium text-foreground">
-                  Calculations Capacity
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-8 pt-8 relative z-10">
-                <div className="mx-auto mb-8 relative">
-                  <div className="w-24 h-24 bg-gradient-primary rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <Home className="h-12 w-12 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-maple-gold rounded-full animate-pulse"></div>
+          {realTimeStats && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-2xl">
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-yellow-300">
+                  {realTimeStats.totalUsers.toLocaleString()}
                 </div>
-                <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                  24/7
-                </CardTitle>
-                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Always Available</CardTitle>
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Round-the-clock access to Canadian housing and financial planning tools
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.2s' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-8 pt-8 relative z-10">
-                <div className="mx-auto mb-8 relative">
-                  <div className="w-24 h-24 bg-gradient-secondary rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <TrendingUp className="h-12 w-12 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="text-sm text-white/80">Users</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-green-300">
+                  {realTimeStats.activeUsers.toLocaleString()}
                 </div>
-                <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">
-                  Live
-                </CardTitle>
-                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Real-Time Data</CardTitle>
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Updated housing and cost metrics across 13 provinces with hourly refreshes
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            
-            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.4s' }}>
-              <div className="absolute inset-0 bg-gradient-to-br from-canada-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="pb-8 pt-8 relative z-10">
-                <div className="mx-auto mb-8 relative">
-                  <div className="w-24 h-24 bg-canada-red rounded-3xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
-                    <Flag className="h-12 w-12 text-white" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-canada-red rounded-full animate-pulse"></div>
+                <div className="text-sm text-white/80">Active</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-blue-300">
+                  {realTimeStats.calculationsToday.toLocaleString()}
                 </div>
-                <CardTitle className="text-4xl font-bold mb-4 text-canada-red">
-                  Official
-                </CardTitle>
-                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Government Data</CardTitle>
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Direct integration with Statistics Canada, CMHC, and provincial databases
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-          
-
-        </div>
-      </section>
-
-      {/* Premium Tools Navigation */}
-      <section className="py-20 md:py-24 bg-gradient-to-br from-muted/20 to-secondary/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-subtle opacity-50"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16 md:mb-20">
-            <div className="inline-block p-3 bg-gradient-primary rounded-2xl mb-6 animate-fade-in shadow-lg">
-              <Calculator className="h-10 w-10 text-white" />
+                <div className="text-sm text-white/80">Calculations</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-orange-300">
+                  {realTimeStats.avgHousingAffordability}%
+                </div>
+                <div className="text-sm text-white/80">Avg Afford.</div>
+              </div>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              Comprehensive 
-              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent"> Financial Tools</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Explore our suite of advanced calculators and analyzers designed specifically for Canadian markets
-            </p>
-          </div>
-          
-          <div className={`grid gap-6 ${isMobile ? 'grid-cols-2 px-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8'}`}>
-            {[
-              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics", path: "/market-dashboard" },
-              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future", path: "/retirement-planner" },
-              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting", path: "/housing-analyzer" },
-              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city", path: "/salary-calculator" },
-              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses", path: "#" },
-              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown", path: "#" },
-              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs", path: "/benefits-finder" },
-              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities", path: "#" },
-              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights", path: "#" },
-              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates", path: "#" }
-            ].map(({ id, label, icon: Icon, color, desc, path }, index) => {
-              return (
-              <Card
-                key={id}
-                className={`group cursor-pointer border-0 bg-gradient-to-br transition-all duration-500 animate-fade-in overflow-hidden relative from-white to-gray-50/80 shadow-card hover:shadow-elegant hover:-translate-y-3 hover-scale ${
-                  activeSection === id ? 'ring-2 ring-primary ring-offset-4 shadow-glow scale-105' : ''
-                }`}
-                style={{ animationDelay: `${index * 0.08}s` }}
-                onClick={() => {
-                  if (path && path !== "#") {
-                    window.location.href = path;
-                  } else {
-                    setActiveSection(id);
-                  }
-                }}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-                <CardHeader className="pb-6 pt-6 relative z-10">
-                  <div className="mb-4 relative">
-                    <div className={`w-16 h-16 bg-gradient-to-r ${color} rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 mx-auto group-hover:shadow-glow group-hover:scale-110 group-hover:rotate-3`}>
-                      <Icon className="h-8 w-8 text-white transition-transform duration-300 group-hover:scale-110" />
-                    </div>
-                    {activeSection === id && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full animate-pulse">
-                        <div className="absolute inset-0 bg-primary rounded-full animate-ping"></div>
-                      </div>
-                    )}
-                  </div>
-                  <CardTitle className="text-lg font-bold mb-2 transition-colors duration-300 text-center leading-tight text-foreground group-hover:text-primary group-hover:scale-105">
-                    {label}
-                  </CardTitle>
-                  <CardDescription className="text-sm leading-snug text-center text-muted-foreground group-hover:text-foreground transition-colors duration-300">
-                    {desc}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            );
-            })}
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <MobileButton 
+              size="lg" 
+              className="bg-white text-primary hover:bg-white/90"
+              onClick={() => setActiveSection("housing-analyzer")}
+              fullWidth={isMobile}
+            >
+              <Home className="mr-2 h-5 w-5" />
+              Start Analysis
+            </MobileButton>
+            
+            <MobileButton 
+              variant="outline" 
+              size="lg"
+              className="border-white/30 text-white hover:bg-white/10"
+              onClick={() => setActiveSection("market-dashboard")}
+              fullWidth={isMobile}
+            >
+              <BarChart3 className="mr-2 h-5 w-5" />
+              View Market Data
+            </MobileButton>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  );
 
-      {/* Enhanced Dynamic Content Section */}
-      <section className="py-20 bg-gradient-subtle">
-        <div className="container mx-auto px-4 space-y-6">
-          {/* Real Data Indicator */}
-          <div className="max-w-4xl mx-auto">
-            <RealDataIndicator
-              lastUpdated={lastUpdated}
-              isLoading={loading}
-              onRefresh={refetch}
-              sources={['Statistics Canada', 'Bank of Canada', 'CMHC']}
-              error={error}
-            />
-          </div>
-          
-          <div className="animate-fade-in">
-            {loading ? (
-              <LoadingSkeleton type="dashboard" />
-            ) : (
-              <>
-                {activeSection === "market-dashboard" && (
-                  <AuthGuard>
-                    <RealTimeMarketDashboard />
-                  </AuthGuard>
-                )}
-                {activeSection === "retirement-planner" && (
-                  <AuthGuard>
-                    <RetirementPlanningCalculator />
-                  </AuthGuard>
-                )}
-                {activeSection === "housing-analyzer" && (
-                  <AuthGuard>
-                    <HousingAffordabilityAnalyzer />
-                  </AuthGuard>
-                )}
-                {activeSection === "salary-calculator" && (
-                  <AuthGuard>
-                    <SalaryRequirementsCalculator />
-                  </AuthGuard>
-                )}
-                {activeSection === "utility-optimizer" && (
-                  <AuthGuard>
-                    <UtilityCostOptimizer />
-                  </AuthGuard>
-                )}
-                {activeSection === "total-calculator" && (
-                  <AuthGuard>
-                    <TotalCostCalculator />
-                  </AuthGuard>
-                )}
-                {activeSection === "benefits-finder" && (
-                  <AuthGuard>
-                    <GovernmentBenefitsFinder />
-                  </AuthGuard>
-                )}
-                {activeSection === "comparison" && (
-                  <AuthGuard>
-                    <CostComparisonTool />
-                  </AuthGuard>
-                )}
-                {activeSection === "regional" && (
-                  <AuthGuard>
-                    <RegionalOverview />
-                  </AuthGuard>
-                )}
-                {activeSection === "news" && (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2">
-                      <AuthGuard>
-                        <NewsWidget />
-                      </AuthGuard>
-                    </div>
-                    <div className="space-y-4">
-                      <MobileOptimizedCard title="Quick Links">
-                        <div className="space-y-2">
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start text-sm h-auto py-2"
-                            onClick={() => setActiveSection("market-dashboard")}
-                          >
-                            <BarChart3 className="h-4 w-4 mr-2" />
-                            Market Dashboard
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start text-sm h-auto py-2"
-                            onClick={() => setActiveSection("housing-analyzer")}
-                          >
-                            <Home className="h-4 w-4 mr-2" />
-                            Housing Analysis
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start text-sm h-auto py-2"
-                            onClick={() => setActiveSection("benefits-finder")}
-                          >
-                            <Gift className="h-4 w-4 mr-2" />
-                            Find Benefits
-                          </Button>
-                        </div>
-                      </MobileOptimizedCard>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Premium Footer */}
-      <footer className="relative overflow-hidden bg-gradient-to-br from-foreground via-gray-900 to-black text-primary-foreground">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-        <div className="relative z-10 container mx-auto px-4 py-20">
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center mb-8 animate-fade-in">
-              <div className="relative group">
-                <div className="absolute -inset-3 bg-gradient-primary rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-500 blur-lg"></div>
-                <img 
-                  src={logo} 
-                  alt="MapleMetrics" 
-                  className="relative h-16 w-16 mr-4 object-contain floating drop-shadow-2xl" 
-                />
+  const renderQuickActions = () => (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {toolSections.slice(0, 4).map((section) => {
+        const Icon = section.icon;
+        return (
+          <MobileOptimizedCard
+            key={section.id}
+            interactive
+            onClick={() => setActiveSection(section.id)}
+            className="text-center hover:shadow-lg transition-all duration-200"
+          >
+            <div className="flex flex-col items-center space-y-3">
+              <div className={`p-3 rounded-xl bg-gradient-to-br ${section.color} shadow-lg`}>
+                <Icon className="h-6 w-6 text-white" />
               </div>
               <div>
-                <span className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  MapleMetrics
-                </span>
-                <div className="w-12 h-0.5 bg-gradient-primary rounded-full mt-1"></div>
+                <h3 className="font-semibold text-sm leading-tight">
+                  {section.title.replace(/^[^\s]+ /, '')}
+                </h3>
               </div>
             </div>
-            <p className="text-xl text-primary-foreground/80 mb-10 max-w-3xl mx-auto animate-slide-up leading-relaxed font-light">
-              Empowering Canadians with data-driven cost analysis and housing insights. 
-              Your trusted partner in making informed financial decisions.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="text-center md:text-left animate-fade-in">
-              <h4 className="text-lg font-semibold mb-4 text-primary-foreground">Trust & Security</h4>
-              <div className="space-y-3">
-                <span className="flex items-center justify-center md:justify-start gap-3 text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300 group">
-                  <div className="w-2 h-2 bg-green-400 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-                  Government-partnership ready
-                </span>
-                <span className="flex items-center justify-center md:justify-start gap-3 text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300 group">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-                  Privacy-focused
-                </span>
-              </div>
-            </div>
-            
-            
-            <div className="text-center md:text-right animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <h4 className="text-lg font-semibold mb-4 text-primary-foreground">Quality Promise</h4>
-              <div className="space-y-3">
-                <span className="flex items-center justify-center md:justify-end gap-3 text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300 group">
-                  <span>Real-time data accuracy</span>
-                  <div className="w-2 h-2 bg-primary rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-                </span>
-                <span className="flex items-center justify-center md:justify-end gap-3 text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300 group">
-                  <span>Expert financial insights</span>
-                  <div className="w-2 h-2 bg-secondary rounded-full group-hover:scale-125 transition-transform duration-300"></div>
-                </span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-primary-foreground/10 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-primary-foreground/60 animate-fade-in">
-                © 2025 MapleMetrics. All rights reserved.
-              </p>
-              <div className="flex items-center gap-2 text-sm text-primary-foreground/60 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <span>Built with</span>
-                <div className="w-4 h-4 bg-canada-red rounded-full animate-pulse"></div>
-                <span>for Canadians</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      <SupportFooter />
+          </MobileOptimizedCard>
+        );
+      })}
     </div>
+  );
+
+  const renderActiveSection = () => {
+    const section = toolSections.find(s => s.id === activeSection);
+    if (!section) return null;
+
+    return (
+      <div className="space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            {section.title}
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            {section.description}
+          </p>
+        </div>
+        
+        <MobileOptimizedCard className="p-0">
+          {section.component}
+        </MobileOptimizedCard>
+      </div>
+    );
+  };
+
+  if (loading && !realTimeStats) {
+    return (
+      <MobileLayout 
+        activeSection={activeSection} 
+        setActiveSection={setActiveSection}
+        showBottomNav={false}
+      >
+        <LoadingSkeleton />
+      </MobileLayout>
+    );
+  }
+
+  return (
+    <MobileLayout 
+      activeSection={activeSection} 
+      setActiveSection={setActiveSection}
+      className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background"
+    >
+      <div className="space-y-8">
+        {/* Hero Section */}
+        {renderHeroSection()}
+
+        {/* Real Data Indicator */}
+        <div className="flex justify-center">
+          <RealDataIndicator 
+            lastUpdated={lastUpdated} 
+            onRefresh={refetch}
+            isLoading={loading}
+          />
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-4">
+          <h2 className="text-xl md:text-2xl font-bold text-center text-foreground">
+            Quick Tools
+          </h2>
+          {renderQuickActions()}
+        </div>
+
+        {/* Active Section */}
+        {renderActiveSection()}
+
+        {/* News Widget */}
+        <MobileOptimizedCard title="📰 Housing Market News">
+          <NewsWidget />
+        </MobileOptimizedCard>
+
+        {/* Support Footer */}
+        <SupportFooter />
+      </div>
+    </MobileLayout>
   );
 };
 

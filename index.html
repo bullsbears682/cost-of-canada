@@ -1,27 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MapleMetrics - Canadian Cost of Living Analysis</title>
-    <meta name="description" content="Navigate Canada's housing affordability with MapleMetrics. Comprehensive regional analysis, real-time government data, and expert insights for informed living decisions across all provinces and territories." />
-    <meta name="author" content="MapleMetrics" />
-    <meta name="keywords" content="Canada cost of living, housing affordability, Canadian provinces, living expenses, MapleMetrics, real estate costs, salary requirements, government benefits" />
+    <link rel="icon" type="image/svg+xml" href="/icon-96.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#dc2626" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="MapleMetrics" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="48x48" href="/icon-48.svg" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/icon-72.svg" />
+    <link rel="apple-touch-icon" sizes="96x96" href="/icon-96.svg" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/icon-144.svg" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.svg" />
+    
+    <!-- Mobile Optimization -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <title>MapleMetrics - Canadian Housing Affordability Analysis</title>
+    <meta name="description" content="Navigate Canada's housing affordability with comprehensive regional analysis and real-time government data. Make informed decisions about Canadian housing markets." />
+    <meta name="author" content="MapleMetrics Team" />
+    <meta name="keywords" content="Canada housing, affordability calculator, cost of living, real estate analysis, Canadian housing market, government benefits, retirement planning" />
 
-    <meta property="og:title" content="MapleMetrics - Canadian Cost of Living Analysis" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="MapleMetrics - Canadian Housing Affordability" />
     <meta property="og:description" content="Navigate Canada's housing affordability with comprehensive regional analysis and real-time government data." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:url" content="https://maplemetrics.com" />
+    <meta property="og:image" content="/icon-512.svg" />
+    <meta property="og:locale" content="en_CA" />
 
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:title" content="MapleMetrics - Canadian Cost of Living Analysis" />
+    <meta name="twitter:title" content="MapleMetrics - Canadian Housing Affordability" />
     <meta name="twitter:description" content="Navigate Canada's housing affordability with comprehensive regional analysis and real-time government data." />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:image" content="/icon-512.svg" />
+    
+    <!-- Performance and Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
