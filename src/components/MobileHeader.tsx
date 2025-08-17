@@ -19,14 +19,12 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
   const isHomePage = location.pathname === '/';
 
   const menuItems = [
-    { id: "market-dashboard", label: "Market Dashboard", icon: BarChart3, path: "/market-dashboard" },
-    { id: "housing-analyzer", label: "Housing Analysis", icon: Home, path: "/housing-analyzer" },
-    { id: "retirement-planner", label: "Retirement Planning", icon: PiggyBank, path: "/retirement-planner" },
-    { id: "salary-calculator", label: "Salary Calculator", icon: DollarSign, path: "/salary-calculator" },
-    { id: "benefits-finder", label: "Benefits Finder", icon: Gift, path: "/benefits-finder" },
-    { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, path: "#" },
-    { id: "comparison", label: "City Comparison", icon: MapPin, path: "#" },
-    { id: "regional", label: "Regional Overview", icon: TrendingUp, path: "#" },
+    { id: "home", label: "Home", icon: Home, path: "/", description: "Main dashboard with all tools" },
+    { id: "market-dashboard", label: "Market Dashboard", icon: BarChart3, path: "/market-dashboard", description: "Real-time housing & economic data" },
+    { id: "housing-analyzer", label: "Housing Analysis", icon: Calculator, path: "/housing-analyzer", description: "Analyze buying vs renting costs" },
+    { id: "retirement-planner", label: "Retirement Planning", icon: PiggyBank, path: "/retirement-planner", description: "Plan your financial future" },
+    { id: "salary-calculator", label: "Salary Calculator", icon: DollarSign, path: "/salary-calculator", description: "Income needed by city" },
+    { id: "benefits-finder", label: "Benefits Finder", icon: Gift, path: "/benefits-finder", description: "Discover government programs" },
   ];
 
   const supportItems = [
@@ -62,7 +60,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-gradient-to-br from-background to-muted/20">
+            <SheetContent side="right" className="w-[85vw] max-w-sm bg-gradient-to-br from-background to-muted/20">
               <div className="flex flex-col h-full">
                 <div className="flex items-center gap-3 pb-6 border-b animate-fade-in">
                   <img src={logo} alt="MapleMetrics" className="h-10 w-10 object-contain" />
@@ -112,29 +110,33 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
                       <div className="space-y-2">
                         {menuItems.map((item, index) => {
                           const Icon = item.icon;
-                          const isActive = activeSection === item.id;
+                          const isActive = location.pathname === item.path || (item.path === "/" && isHomePage);
                           return (
-                            <Button
+                            <div
                               key={item.id}
-                              variant={isActive ? "default" : "ghost"}
-                              className={`w-full justify-start text-left h-12 transition-all duration-300 animate-fade-in hover-scale ${
+                              className={`rounded-lg p-3 transition-all duration-300 animate-fade-in hover-scale cursor-pointer ${
                                 isActive 
                                   ? 'bg-gradient-primary text-white shadow-lg scale-105' 
-                                  : 'hover:bg-accent hover:text-accent-foreground hover:translate-x-2 hover:shadow-md'
+                                  : 'hover:bg-accent hover:text-accent-foreground hover:translate-x-1 hover:shadow-md'
                               }`}
                               style={{ animationDelay: `${index * 0.05}s` }}
                               onClick={() => {
-                                if (item.path && item.path !== "#") {
-                                  window.location.href = item.path;
-                                } else {
-                                  setActiveSection(item.id);
-                                }
+                                window.location.href = item.path;
                                 setIsOpen(false);
                               }}
                             >
-                              <Icon className={`h-5 w-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`} />
-                              {item.label}
-                            </Button>
+                              <div className="flex items-start gap-3">
+                                <Icon className={`h-5 w-5 mt-0.5 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'} flex-shrink-0`} />
+                                <div className="flex-1 min-w-0">
+                                  <div className={`font-medium ${isActive ? 'text-white' : 'text-foreground'}`}>
+                                    {item.label}
+                                  </div>
+                                  <div className={`text-xs mt-0.5 ${isActive ? 'text-white/80' : 'text-muted-foreground'}`}>
+                                    {item.description}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           );
                         })}
                       </div>
