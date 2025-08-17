@@ -25,11 +25,7 @@ export const useRealData = (dataType: 'demographics' | 'housing' | 'economic' | 
       setState(prev => ({ ...prev, loading: true, error: null }));
       
       const { data, error } = await supabase.functions.invoke('fetch-real-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ type: dataType })
+        body: { type: dataType }
       });
 
       if (error) {
