@@ -14,7 +14,6 @@ import RetirementPlanningCalculator from "@/components/RetirementPlanningCalcula
 import RealDataIndicator from "@/components/RealDataIndicator";
 import NewsWidget from "@/components/NewsWidget";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
-import ExportButton from "@/components/ExportButton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import { useRealData } from "@/hooks/useRealData";
 import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper } from "lucide-react";
@@ -176,114 +175,15 @@ const Index = () => {
               <LoadingSkeleton type="dashboard" />
             ) : (
               <>
-                {activeSection === "market-dashboard" && (
-                  <div id="market-dashboard-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="market-dashboard-content"
-                        filename="market-dashboard-report"
-                        title="Market Dashboard Report"
-                      />
-                    </div>
-                    <RealTimeMarketDashboard />
-                  </div>
-                )}
-                {activeSection === "retirement-planner" && (
-                  <div id="retirement-planner-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="retirement-planner-content"
-                        filename="retirement-planner-report"
-                        title="Retirement Planning Report"
-                      />
-                    </div>
-                    <RetirementPlanningCalculator />
-                  </div>
-                )}
-                {activeSection === "housing-analyzer" && (
-                  <div id="housing-analyzer-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="housing-analyzer-content"
-                        filename="housing-affordability-report"
-                        title="Housing Affordability Analysis"
-                      />
-                    </div>
-                    <HousingAffordabilityAnalyzer />
-                  </div>
-                )}
-                {activeSection === "salary-calculator" && (
-                  <div id="salary-calculator-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="salary-calculator-content"
-                        filename="salary-requirements-report"
-                        title="Salary Requirements Analysis"
-                      />
-                    </div>
-                    <SalaryRequirementsCalculator />
-                  </div>
-                )}
-                {activeSection === "utility-optimizer" && (
-                  <div id="utility-optimizer-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="utility-optimizer-content"
-                        filename="utility-cost-report"
-                        title="Utility Cost Optimization"
-                      />
-                    </div>
-                    <UtilityCostOptimizer />
-                  </div>
-                )}
-                {activeSection === "total-calculator" && (
-                  <div id="total-calculator-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="total-calculator-content"
-                        filename="total-cost-report"
-                        title="Total Cost Analysis"
-                      />
-                    </div>
-                    <TotalCostCalculator />
-                  </div>
-                )}
-                {activeSection === "benefits-finder" && (
-                  <div id="benefits-finder-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="benefits-finder-content"
-                        filename="benefits-analysis-report"
-                        title="Government Benefits Analysis"
-                      />
-                    </div>
-                    <GovernmentBenefitsFinder />
-                  </div>
-                )}
-                {activeSection === "comparison" && (
-                  <div id="comparison-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="comparison-content"
-                        filename="city-comparison-report"
-                        title="City Comparison Analysis"
-                      />
-                    </div>
-                    <CostComparisonTool />
-                  </div>
-                )}
-                {activeSection === "regional" && (
-                  <div id="regional-content">
-                    <div className="flex justify-end mb-4">
-                      <ExportButton 
-                        elementId="regional-content"
-                        filename="regional-overview-report"
-                        title="Regional Overview Analysis"
-                      />
-                    </div>
-                    <RegionalOverview />
-                  </div>
-                )}
+                {activeSection === "market-dashboard" && <RealTimeMarketDashboard />}
+                {activeSection === "retirement-planner" && <RetirementPlanningCalculator />}
+                {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
+                {activeSection === "salary-calculator" && <SalaryRequirementsCalculator />}
+                {activeSection === "utility-optimizer" && <UtilityCostOptimizer />}
+                {activeSection === "total-calculator" && <TotalCostCalculator />}
+                {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
+                {activeSection === "comparison" && <CostComparisonTool />}
+                {activeSection === "regional" && <RegionalOverview />}
                 {activeSection === "news" && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
@@ -318,13 +218,6 @@ const Index = () => {
                           </Button>
                         </div>
                       </MobileOptimizedCard>
-                      <ExportButton 
-                        filename="economic-news-summary"
-                        title="Economic News Summary"
-                        variant="default"
-                        size="default"
-                        className="w-full"
-                      />
                     </div>
                   </div>
                 )}
