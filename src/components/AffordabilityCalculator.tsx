@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Calculator, DollarSign, Home, PieChart, AlertTriangle, CheckCircle } from "lucide-react";
+import PDFExportButton from "./PDFExportButton";
 
 const canadianCities = [
   { name: "Vancouver, BC", avgRent: 2800, avgHome: 1200000 },
@@ -156,7 +157,33 @@ export const AffordabilityCalculator = () => {
 
       {/* Results */}
       {affordabilityData && cityData && (
-        <div className="space-y-6">
+        <div className="space-y-6" id="affordability-results">
+          {/* Export Button */}
+          <div className="flex justify-end">
+            <PDFExportButton
+              calculationType="housing"
+              calculationName="Housing Affordability Analysis"
+              parameters={{
+                'Annual Income': `$${income.toLocaleString()}`,
+                'Selected City': selectedCity,
+                'Down Payment': `${downPaymentPercent}%`,
+                'Monthly Debts': `$${debts.toLocaleString()}`
+              }}
+              results={{
+                'Rent Affordability': `${affordabilityData.rentAffordability.toFixed(1)}% of income`,
+                'Max Affordable Rent': `$${affordabilityData.maxAffordableRent.toLocaleString()}/month`,
+                'Max Purchase Price': `$${affordabilityData.maxPurchasePrice.toLocaleString()}`,
+                'Required Down Payment': `$${affordabilityData.requiredDownPayment.toLocaleString()}`,
+                'Monthly Mortgage Payment': `$${affordabilityData.monthlyMortgagePayment.toLocaleString()}`,
+                'Purchase Affordability': `${affordabilityData.purchaseAffordability.toFixed(1)}% of income`
+              }}
+              variant="outline"
+              className="mb-4"
+            >
+              Export Analysis
+            </PDFExportButton>
+          </div>
+          
           {/* Rent Affordability */}
           <Card className="shadow-elegant">
             <CardHeader className="bg-gradient-primary text-primary-foreground">
