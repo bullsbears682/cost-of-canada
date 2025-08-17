@@ -22,7 +22,7 @@ import { FeatureGate } from "@/components/FeatureGate";
 import { useRealData } from "@/hooks/useRealData";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Crown, Flag } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Crown, Flag, Lock, Unlock } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 import { Link } from "react-router-dom";
@@ -32,6 +32,15 @@ const Index = () => {
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
   const { user, signOut, subscription, refreshSubscription } = useAuth();
   const isMobile = useIsMobile();
+
+  // Helper function to check if feature is unlocked
+  const isFeatureUnlocked = (requiredTier: string) => {
+    if (!user || !subscription?.subscribed) return false;
+    const tierHierarchy = { 'Essential': 1, 'Professional': 2, 'Expert': 3 };
+    const userTierLevel = tierHierarchy[subscription?.subscription_tier as keyof typeof tierHierarchy] || 0;
+    const requiredTierLevel = tierHierarchy[requiredTier as keyof typeof tierHierarchy] || 0;
+    return userTierLevel >= requiredTierLevel;
+  };
 
   // Handle subscription status from URL params
   useEffect(() => {
@@ -245,51 +254,79 @@ const Index = () => {
           
           <div className={`grid gap-6 ${isMobile ? 'grid-cols-2 px-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8'}`}>
             {[
-              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics", path: "/market-dashboard" },
-              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future", path: "/retirement-planner" },
-              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting", path: "/housing-analyzer" },
-              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city", path: "/salary-calculator" },
-              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses", path: "#" },
-              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown", path: "#" },
-              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs", path: "/benefits-finder" },
-              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities", path: "#" },
-              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights", path: "#" },
-              { id: "subscriptions", label: "Premium Plans", icon: Crown, color: "from-gradient-primary", desc: "Unlock advanced features", path: "/subscriptions" },
-              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates", path: "#" }
-            ].map(({ id, label, icon: Icon, color, desc, path }, index) => (
+              { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "from-blue-500 to-blue-600", desc: "Real-time housing & economic metrics", path: "/market-dashboard", tier: "Essential" },
+              { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "from-green-500 to-green-600", desc: "Plan your financial future", path: "/retirement-planner", tier: "Professional" },
+              { id: "housing-analyzer", label: "Housing Affordability", icon: Home, color: "from-primary to-primary-dark", desc: "Analyze buying vs renting", path: "/housing-analyzer", tier: "Essential" },
+              { id: "salary-calculator", label: "Salary Requirements", icon: DollarSign, color: "from-yellow-500 to-orange-500", desc: "Income needed by city", path: "/salary-calculator", tier: "Professional" },
+              { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, color: "from-purple-500 to-purple-600", desc: "Reduce monthly expenses", path: "#", tier: "Essential" },
+              { id: "total-calculator", label: "Total Cost Calculator", icon: Calculator, color: "from-cyan-500 to-cyan-600", desc: "Complete living cost breakdown", path: "#", tier: "Professional" },
+              { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs", path: "/benefits-finder", tier: "Essential" },
+              { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities", path: "#", tier: "Professional" },
+              { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights", path: "#", tier: "Expert" },
+              { id: "subscriptions", label: "Premium Plans", icon: Crown, color: "from-gradient-primary", desc: "Unlock advanced features", path: "/subscriptions", tier: null },
+              { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates", path: "#", tier: "Professional" }
+            ].map(({ id, label, icon: Icon, color, desc, path, tier }, index) => {
+              const unlocked = !tier || isFeatureUnlocked(tier);
+              const LockIcon = unlocked ? Unlock : Lock;
+              return (
               <Card
                 key={id}
-                className={`group cursor-pointer border-0 bg-gradient-to-br from-white to-gray-50/80 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-3 animate-fade-in overflow-hidden relative ${
+                className={`group cursor-pointer border-0 bg-gradient-to-br transition-all duration-500 animate-fade-in overflow-hidden relative ${
+                  unlocked 
+                    ? 'from-white to-gray-50/80 shadow-card hover:shadow-elegant hover:-translate-y-3' 
+                    : 'from-gray-100 to-gray-200/80 shadow-sm opacity-75'
+                } ${
                   activeSection === id ? 'ring-2 ring-primary ring-offset-4 shadow-glow scale-105' : ''
                 }`}
                 style={{ animationDelay: `${index * 0.08}s` }}
                 onClick={() => {
-                  if (path && path !== "#") {
+                  if (unlocked && path && path !== "#") {
                     window.location.href = path;
-                  } else {
+                  } else if (unlocked) {
                     setActiveSection(id);
+                  } else if (tier) {
+                    window.location.href = "/subscriptions";
                   }
                 }}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                 <CardHeader className="pb-6 pt-6 relative z-10">
                   <div className="mb-4 relative">
-                    <div className={`w-16 h-16 bg-gradient-to-r ${color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110 mx-auto`}>
-                      <Icon className="h-8 w-8 text-white" />
+                    <div className={`w-16 h-16 bg-gradient-to-r ${unlocked ? color : 'from-gray-400 to-gray-500'} rounded-2xl flex items-center justify-center shadow-lg transition-all duration-500 mx-auto ${unlocked ? 'group-hover:shadow-glow group-hover:scale-110' : ''}`}>
+                      <Icon className={`h-8 w-8 ${unlocked ? 'text-white' : 'text-gray-300'}`} />
                     </div>
+                    {tier && (
+                      <div className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center ${
+                        unlocked ? 'bg-green-500' : 'bg-gray-500'
+                      }`}>
+                        <LockIcon className="h-3 w-3 text-white" />
+                      </div>
+                    )}
                     {activeSection === id && (
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full animate-pulse"></div>
                     )}
                   </div>
-                  <CardTitle className="text-lg font-bold text-center mb-3 text-foreground group-hover:text-primary transition-colors duration-300 leading-tight">
+                  <CardTitle className={`text-lg font-bold mb-2 transition-colors duration-300 text-center leading-tight ${
+                    unlocked ? 'text-foreground group-hover:text-primary' : 'text-gray-500'
+                  }`}>
                     {label}
                   </CardTitle>
-                  <CardDescription className="text-sm text-center text-muted-foreground leading-relaxed">
+                  <CardDescription className={`text-sm leading-snug text-center ${
+                    unlocked ? 'text-muted-foreground' : 'text-gray-400'
+                  }`}>
                     {desc}
                   </CardDescription>
+                  {tier && !unlocked && (
+                    <div className="mt-2 text-center">
+                      <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                        Requires {tier}
+                      </span>
+                    </div>
+                  )}
                 </CardHeader>
               </Card>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
