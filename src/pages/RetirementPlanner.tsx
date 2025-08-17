@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthGuard } from '@/components/AuthGuard';
 import RetirementPlanningCalculator from '@/components/RetirementPlanningCalculator';
 import PageHeader from '@/components/PageHeader';
+import SupportFooter from '@/components/SupportFooter';
 
 const RetirementPlanner = () => {
   return (
@@ -14,6 +15,7 @@ const RetirementPlanner = () => {
           </AuthGuard>
         </div>
       </div>
+      <SupportFooter />
     </>
   );
 };

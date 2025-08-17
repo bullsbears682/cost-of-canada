@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthGuard } from '@/components/AuthGuard';
 import { HousingAffordabilityAnalyzer } from '@/components/HousingAffordabilityAnalyzer';
 import PageHeader from '@/components/PageHeader';
+import SupportFooter from '@/components/SupportFooter';
 
 const HousingAnalyzer = () => {
   return (
@@ -14,6 +15,7 @@ const HousingAnalyzer = () => {
           </AuthGuard>
         </div>
       </div>
+      <SupportFooter />
     </>
   );
 };

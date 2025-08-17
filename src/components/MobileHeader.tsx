@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, User, LogOut, Home, Calculator, BarChart3, MapPin, TrendingUp, Gift, DollarSign, PiggyBank, Zap, ArrowLeft } from 'lucide-react';
+import { Menu, User, LogOut, Home, Calculator, BarChart3, MapPin, TrendingUp, Gift, DollarSign, PiggyBank, Zap, ArrowLeft, HelpCircle, Mail, FileText, Info } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
@@ -27,6 +27,14 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
     { id: "utility-optimizer", label: "Utility Optimizer", icon: Zap, path: "#" },
     { id: "comparison", label: "City Comparison", icon: MapPin, path: "#" },
     { id: "regional", label: "Regional Overview", icon: TrendingUp, path: "#" },
+  ];
+
+  const supportItems = [
+    { id: "faq", label: "FAQ", icon: HelpCircle, path: "/faq" },
+    { id: "contact", label: "Contact Us", icon: Mail, path: "/contact" },
+    { id: "about", label: "About", icon: Info, path: "/about" },
+    { id: "privacy", label: "Privacy Policy", icon: FileText, path: "/privacy" },
+    { id: "terms", label: "Terms of Service", icon: FileText, path: "/terms" },
   ];
 
   return (
@@ -98,34 +106,63 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ activeSection, setActiveSec
                 )}
 
                 <nav className="flex-1 py-6">
-                  <div className="space-y-2">
-                    {menuItems.map((item, index) => {
-                      const Icon = item.icon;
-                      const isActive = activeSection === item.id;
-                      return (
-                        <Button
-                          key={item.id}
-                          variant={isActive ? "default" : "ghost"}
-                          className={`w-full justify-start text-left h-12 transition-all duration-300 animate-fade-in hover-scale ${
-                            isActive 
-                              ? 'bg-gradient-primary text-white shadow-lg scale-105' 
-                              : 'hover:bg-accent hover:text-accent-foreground hover:translate-x-2 hover:shadow-md'
-                          }`}
-                          style={{ animationDelay: `${index * 0.05}s` }}
-                          onClick={() => {
-                            if (item.path && item.path !== "#") {
-                              window.location.href = item.path;
-                            } else {
-                              setActiveSection(item.id);
-                            }
-                            setIsOpen(false);
-                          }}
-                        >
-                          <Icon className={`h-5 w-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`} />
-                          {item.label}
-                        </Button>
-                      );
-                    })}
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">Tools</h3>
+                      <div className="space-y-2">
+                        {menuItems.map((item, index) => {
+                          const Icon = item.icon;
+                          const isActive = activeSection === item.id;
+                          return (
+                            <Button
+                              key={item.id}
+                              variant={isActive ? "default" : "ghost"}
+                              className={`w-full justify-start text-left h-12 transition-all duration-300 animate-fade-in hover-scale ${
+                                isActive 
+                                  ? 'bg-gradient-primary text-white shadow-lg scale-105' 
+                                  : 'hover:bg-accent hover:text-accent-foreground hover:translate-x-2 hover:shadow-md'
+                              }`}
+                              style={{ animationDelay: `${index * 0.05}s` }}
+                              onClick={() => {
+                                if (item.path && item.path !== "#") {
+                                  window.location.href = item.path;
+                                } else {
+                                  setActiveSection(item.id);
+                                }
+                                setIsOpen(false);
+                              }}
+                            >
+                              <Icon className={`h-5 w-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-105'}`} />
+                              {item.label}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-semibold text-muted-foreground mb-2 px-2">Support</h3>
+                      <div className="space-y-2">
+                        {supportItems.map((item, index) => {
+                          const Icon = item.icon;
+                          return (
+                            <Button
+                              key={item.id}
+                              variant="ghost"
+                              className="w-full justify-start text-left h-10 transition-all duration-300 animate-fade-in hover-scale hover:bg-accent hover:text-accent-foreground hover:translate-x-2 hover:shadow-md"
+                              style={{ animationDelay: `${(menuItems.length + index) * 0.05}s` }}
+                              onClick={() => {
+                                window.location.href = item.path;
+                                setIsOpen(false);
+                              }}
+                            >
+                              <Icon className="h-4 w-4 mr-3 transition-transform duration-200 group-hover:scale-105" />
+                              {item.label}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </nav>
 

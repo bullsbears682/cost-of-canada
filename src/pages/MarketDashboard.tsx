@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthGuard } from '@/components/AuthGuard';
 import { RealTimeMarketDashboard } from '@/components/RealTimeMarketDashboard';
 import PageHeader from '@/components/PageHeader';
+import SupportFooter from '@/components/SupportFooter';
 
 const MarketDashboard = () => {
   return (
@@ -14,6 +15,7 @@ const MarketDashboard = () => {
           </AuthGuard>
         </div>
       </div>
+      <SupportFooter />
     </>
   );
 };

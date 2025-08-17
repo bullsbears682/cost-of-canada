@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthGuard } from '@/components/AuthGuard';
 import { GovernmentBenefitsFinder } from '@/components/GovernmentBenefitsFinder';
 import PageHeader from '@/components/PageHeader';
+import SupportFooter from '@/components/SupportFooter';
 
 const BenefitsFinder = () => {
   return (
@@ -14,6 +15,7 @@ const BenefitsFinder = () => {
           </AuthGuard>
         </div>
       </div>
+      <SupportFooter />
     </>
   );
 };

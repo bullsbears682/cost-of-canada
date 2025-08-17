@@ -13,6 +13,12 @@ import HousingAnalyzer from "./pages/HousingAnalyzer";
 import RetirementPlanner from "./pages/RetirementPlanner";
 import SalaryCalculator from "./pages/SalaryCalculator";
 import BenefitsFinder from "./pages/BenefitsFinder";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import FAQ from "./pages/FAQ";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import FeedbackWidget from "./components/FeedbackWidget";
 
 const queryClient = new QueryClient();
 
@@ -32,9 +38,15 @@ const App = () => {
               <Route path="/retirement-planner" element={<RetirementPlanner />} />
               <Route path="/salary-calculator" element={<SalaryCalculator />} />
               <Route path="/benefits-finder" element={<BenefitsFinder />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <FeedbackWidget />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

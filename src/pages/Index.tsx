@@ -16,6 +16,7 @@ import NewsWidget from "@/components/NewsWidget";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
 import MobileHeader from "@/components/MobileHeader";
+import SupportFooter from "@/components/SupportFooter";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useRealData } from "@/hooks/useRealData";
 import { useAuth } from "@/contexts/AuthContext";
@@ -459,6 +460,8 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <SupportFooter />
     </div>
   );
 };
