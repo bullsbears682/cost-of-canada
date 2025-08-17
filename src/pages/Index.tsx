@@ -76,6 +76,16 @@ const Index = () => {
                         <span>{subscription.subscription_tier}</span>
                       </div>
                     )}
+                    {!subscription.subscribed && (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={refreshSubscription}
+                        className="text-primary hover:text-primary-dark"
+                      >
+                        Refresh Status
+                      </Button>
+                    )}
                     <Button variant="ghost" size="sm" className="flex items-center gap-2">
                       <User className="h-4 w-4" />
                       <span className="hidden sm:inline">{user.email}</span>
