@@ -15,10 +15,13 @@ import RealDataIndicator from "@/components/RealDataIndicator";
 import NewsWidget from "@/components/NewsWidget";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import MobileOptimizedCard from "@/components/MobileOptimizedCard";
+import SubscriptionPlans from "@/components/SubscriptionPlans";
 import { useRealData } from "@/hooks/useRealData";
-import { MapPin, Calculator, TrendingUp, Home, Flag, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Crown, Flag } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
