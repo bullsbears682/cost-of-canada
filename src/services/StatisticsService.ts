@@ -78,11 +78,11 @@ export class StatisticsService {
   // Get fallback statistics (if database is unavailable)
   static getFallbackStatistics(): RealTimeStats {
     return {
-      totalUsers: 12500,
-      totalCalculations: 185000,
+      totalUsers: 0, // Will show as potential/capacity
+      totalCalculations: 0, // Will show as potential/capacity  
       citiesCovered: 50,
       dataSources: 15,
-      activeUsersMonthly: 8200,
+      activeUsersMonthly: 0, // Will show as potential/capacity
       lastUpdated: new Date().toISOString()
     };
   }
@@ -155,14 +155,11 @@ export class StatisticsService {
         const hour = now.getHours();
         const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
         
-        // Simulate realistic daily growth
-        const baseUsers = enhancedStats.totalUsers || 12500;
-        const baseCalculations = enhancedStats.totalCalculations || 185000;
-        
-        // Add daily variance
-        enhancedStats.totalUsers = baseUsers + Math.floor(dayOfYear * 2.3) + Math.floor(hour * 0.8);
-        enhancedStats.totalCalculations = baseCalculations + Math.floor(dayOfYear * 45) + Math.floor(hour * 12);
-        enhancedStats.activeUsersMonthly = Math.floor(enhancedStats.totalUsers * 0.65) + Math.floor(Math.sin(dayOfYear / 30) * 500);
+        // Keep real statistics without artificial inflation
+        // These will grow naturally as real users use the app
+        enhancedStats.totalUsers = dbStats.totalUsers;
+        enhancedStats.totalCalculations = dbStats.totalCalculations;
+        enhancedStats.activeUsersMonthly = Math.floor(dbStats.totalUsers * 0.8); // Assume 80% are monthly active
         
         return { data: enhancedStats };
       }

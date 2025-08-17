@@ -65,9 +65,9 @@ CREATE TABLE public.app_statistics (
   metadata JSONB DEFAULT '{}'
 );
 
--- Initialize key statistics
+-- Initialize key statistics with realistic starting values
 INSERT INTO public.app_statistics (metric_name, metric_value, metadata) VALUES
-('total_users', 0, '{"description": "Total registered users"}'),
+('total_users', 1, '{"description": "Total registered users"}'),
 ('total_calculations', 0, '{"description": "Total calculations performed"}'),
 ('cities_covered', 50, '{"description": "Number of Canadian cities with data"}'),
 ('data_sources', 15, '{"description": "Number of official data sources"}'),

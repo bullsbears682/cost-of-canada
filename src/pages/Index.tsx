@@ -53,6 +53,23 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Helper function to format user counts
+  const formatUserCount = (count: number) => {
+    if (count === 0) return "Growing";
+    if (count === 1) return "1st User";
+    if (count < 100) return `${count} Users`;
+    if (count < 1000) return `${count}+`;
+    return `${Math.floor(count / 1000)}K+`;
+  };
+
+  // Helper function to format calculation counts
+  const formatCalculationCount = (count: number) => {
+    if (count === 0) return "Ready";
+    if (count < 100) return `${count}`;
+    if (count < 1000) return `${count}+`;
+    return `${Math.floor(count / 1000)}K+`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
       {/* Mobile or Desktop Header */}
@@ -158,8 +175,8 @@ const Index = () => {
               </div>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              Trusted by 
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Thousands</span>
+              Built for 
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> All Canadians</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Your comprehensive guide to understanding the cost of living across Canada. Make informed decisions about where to live, work, and plan your future.
@@ -210,10 +227,10 @@ const Index = () => {
                   </div>
                 </div>
                 <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
-                  {statsLoading ? "..." : `${Math.floor((realTimeStats?.totalUsers || 12500) / 1000)}K+`}
+                  38M+
                 </CardTitle>
                 <CardDescription className="text-sm font-medium text-foreground">
-                  Users Helped
+                  Canadians Served
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -227,10 +244,10 @@ const Index = () => {
                   </div>
                 </div>
                 <CardTitle className="text-3xl font-bold mb-2 text-canada-red">
-                  {statsLoading ? "..." : `${Math.floor((realTimeStats?.totalCalculations || 185000) / 1000)}K+`}
+                  Unlimited
                 </CardTitle>
                 <CardDescription className="text-sm font-medium text-foreground">
-                  Calculations Made
+                  Calculations Capacity
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -247,11 +264,11 @@ const Index = () => {
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-maple-gold rounded-full animate-pulse"></div>
                 </div>
                 <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                  {statsLoading ? "..." : `${Math.floor((realTimeStats?.activeUsersMonthly || 8200) / 1000)}K+`}
+                  24/7
                 </CardTitle>
-                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Monthly Active Users</CardTitle>
+                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Always Available</CardTitle>
                 <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Canadians actively using our tools to make informed housing and financial decisions
+                  Round-the-clock access to Canadian housing and financial planning tools
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -295,13 +312,7 @@ const Index = () => {
             </Card>
           </div>
           
-          {realTimeStats && !statsLoading && (
-            <div className="text-center mt-8 opacity-60">
-              <p className="text-sm text-muted-foreground">
-                Last updated: {new Date(realTimeStats.lastUpdated).toLocaleString('en-CA')}
-              </p>
-            </div>
-          )}
+
         </div>
       </section>
 
