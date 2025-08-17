@@ -18,10 +18,8 @@ import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
-import More from "./pages/More";
 import AdminDashboard from "./pages/AdminDashboard";
 import FeedbackWidget from "./components/FeedbackWidget";
-import BottomTabNavigation from "./components/BottomTabNavigation";
 
 const queryClient = new QueryClient();
 
@@ -46,13 +44,11 @@ const App = () => {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
-              <Route path="/more" element={<More />} />
               <Route path="/admin" element={<AdminDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <FeedbackWidget />
-            <BottomTabNavigation />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
