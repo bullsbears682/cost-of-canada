@@ -60,11 +60,26 @@ const RetirementPlanningCalculator = () => {
   const [results, setResults] = useState<any>(null);
 
   const calculateRetirement = () => {
+    // Input validation
+    if (inputs.retirementAge <= inputs.currentAge) {
+      alert("Retirement age must be greater than current age");
+      return;
+    }
+    if (inputs.currentAge < 18 || inputs.currentAge > 80) {
+      alert("Please enter a valid current age (18-80)");
+      return;
+    }
+    if (inputs.expectedReturn < 1 || inputs.expectedReturn > 15) {
+      alert("Expected return should be between 1% and 15%");
+      return;
+    }
+
     const yearsToRetirement = inputs.retirementAge - inputs.currentAge;
     const yearsInRetirement = 85 - inputs.retirementAge; // Assume living to 85
     const monthsToRetirement = yearsToRetirement * 12;
     const annualReturn = inputs.expectedReturn / 100;
     const monthlyReturn = annualReturn / 12;
+    const inflationRate = 0.025; // 2.5% annual inflation
 
     // Calculate future value of current savings
     const futureCurrentSavings = inputs.currentSavings * Math.pow(1 + annualReturn, yearsToRetirement);
@@ -78,20 +93,37 @@ const RetirementPlanningCalculator = () => {
     // Calculate retirement needs based on province
     const provinceInfo = provinceData[inputs.province];
     const lifestyleMultiplier = lifestyleMultipliers[inputs.desiredLifestyle as keyof typeof lifestyleMultipliers];
-    const annualRetirementNeeds = provinceInfo.avgRetirementCost * lifestyleMultiplier;
-    const totalRetirementNeeds = annualRetirementNeeds * yearsInRetirement;
+    const currentAnnualRetirementNeeds = provinceInfo.avgRetirementCost * lifestyleMultiplier;
+    
+    // Adjust for inflation at retirement start
+    const inflationAdjustedAnnualNeeds = currentAnnualRetirementNeeds * Math.pow(1 + inflationRate, yearsToRetirement);
+    
+    // Calculate present value of retirement needs (annuity calculation)
+    // This accounts for the fact that money withdrawn later is worth less
+    const realReturnInRetirement = (annualReturn - inflationRate) / (1 + inflationRate);
+    let totalRetirementNeeds;
+    
+    if (Math.abs(realReturnInRetirement) < 0.001) {
+      // If real return is essentially zero, use simple multiplication
+      totalRetirementNeeds = inflationAdjustedAnnualNeeds * yearsInRetirement;
+    } else {
+      totalRetirementNeeds = inflationAdjustedAnnualNeeds * 
+        ((1 - Math.pow(1 + realReturnInRetirement, -yearsInRetirement)) / realReturnInRetirement);
+    }
 
     // Calculate gap
     const gap = totalRetirementNeeds - totalSavings;
     const monthlyGapAmount = gap > 0 ? gap / monthsToRetirement : 0;
 
-    // Calculate recommended monthly savings
-    const recommendedMonthlySavings = totalRetirementNeeds / 
-      ((Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn);
+    // Calculate recommended monthly savings (more realistic approach)
+    // This considers current savings and calculates additional monthly savings needed
+    const additionalSavingsNeeded = Math.max(0, totalRetirementNeeds - futureCurrentSavings);
+    const recommendedMonthlySavings = monthsToRetirement > 0 ? 
+      additionalSavingsNeeded / ((Math.pow(1 + monthlyReturn, monthsToRetirement) - 1) / monthlyReturn) : 0;
 
     setResults({
       totalSavings,
-      annualRetirementNeeds,
+      annualRetirementNeeds: inflationAdjustedAnnualNeeds,
       totalRetirementNeeds,
       gap,
       monthlyGapAmount,
@@ -264,14 +296,14 @@ const RetirementPlanningCalculator = () => {
                     <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                       <span className="text-sm">Projected Savings at Retirement</span>
                       <span className="font-semibold text-green-600">
-                        ${results.totalSavings.toLocaleString()}
+                        ${Math.round(results.totalSavings).toLocaleString()}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
                       <span className="text-sm">Total Retirement Needs</span>
                       <span className="font-semibold">
-                        ${results.totalRetirementNeeds.toLocaleString()}
+                        ${Math.round(results.totalRetirementNeeds).toLocaleString()}
                       </span>
                     </div>
 
@@ -281,14 +313,14 @@ const RetirementPlanningCalculator = () => {
                         {results.gap > 0 && <AlertTriangle className="h-4 w-4 text-yellow-600" />}
                       </div>
                       <span className={`font-semibold ${getGapColor(results.gap)}`}>
-                        {results.gap > 0 ? `-$${results.gap.toLocaleString()}` : 'Fully Funded!'}
+                        {results.gap > 0 ? `-$${Math.round(Math.abs(results.gap)).toLocaleString()}` : 'Fully Funded!'}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center p-3 bg-primary/10 rounded-lg">
                       <span className="text-sm">Recommended Monthly Savings</span>
                       <span className="font-semibold text-primary">
-                        ${results.recommendedMonthlySavings.toLocaleString()}
+                        ${Math.round(results.recommendedMonthlySavings).toLocaleString()}
                       </span>
                     </div>
                   </div>
