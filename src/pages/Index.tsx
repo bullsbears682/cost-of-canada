@@ -24,7 +24,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { StatisticsService, RealTimeStats } from "@/services/StatisticsService";
 import { UserProfileService } from "@/services/UserProfileService";
 import UserProfileButton from "@/components/UserProfileButton";
-import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag } from "lucide-react";
+import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag, Loader2 } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
 import { Link } from "react-router-dom";
@@ -41,16 +41,37 @@ const Index = () => {
   useEffect(() => {
     const loadStats = async () => {
       setStatsLoading(true);
-      const { data } = await StatisticsService.getEnhancedStatistics();
-      setRealTimeStats(data);
-      setStatsLoading(false);
+      try {
+        const { data } = await StatisticsService.getEnhancedStatistics();
+        setRealTimeStats(data);
+      } catch (error) {
+        console.error('Failed to load statistics:', error);
+        // Set fallback data on error
+        setRealTimeStats({
+          totalUsers: 1,
+          totalCalculations: 0,
+          citiesCovered: 50,
+          dataSources: 15,
+          activeUsersMonthly: 0,
+          lastUpdated: new Date().toISOString()
+        });
+      } finally {
+        setStatsLoading(false);
+      }
     };
 
-    loadStats();
+    // Load immediately with shorter initial delay
+    const initialDelay = setTimeout(() => {
+      loadStats();
+    }, 100);
     
-    // Refresh stats every 5 minutes
-    const interval = setInterval(loadStats, 5 * 60 * 1000);
-    return () => clearInterval(interval);
+    // Refresh stats every 10 minutes (less frequent)
+    const interval = setInterval(loadStats, 10 * 60 * 1000);
+    
+    return () => {
+      clearTimeout(initialDelay);
+      clearInterval(interval);
+    };
   }, []);
 
   // Helper function to format user counts
@@ -193,7 +214,9 @@ const Index = () => {
                   </div>
                 </div>
                 <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                  {statsLoading ? "..." : `${realTimeStats?.citiesCovered || 50}+`}
+                  {statsLoading ? (
+                    <div className="h-8 w-16 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-pulse mx-auto"></div>
+                  ) : `${realTimeStats?.citiesCovered || 50}+`}
                 </CardTitle>
                 <CardDescription className="text-sm font-medium text-foreground">
                   Cities Covered
@@ -210,7 +233,9 @@ const Index = () => {
                   </div>
                 </div>
                 <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">
-                  {statsLoading ? "..." : `${realTimeStats?.dataSources || 15}+`}
+                  {statsLoading ? (
+                    <div className="h-8 w-16 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded animate-pulse mx-auto"></div>
+                  ) : `${realTimeStats?.dataSources || 15}+`}
                 </CardTitle>
                 <CardDescription className="text-sm font-medium text-foreground">
                   Data Sources
