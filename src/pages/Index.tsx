@@ -21,6 +21,9 @@ import { AuthGuard } from "@/components/AuthGuard";
 import { useRealData } from "@/hooks/useRealData";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { StatisticsService, RealTimeStats } from "@/services/StatisticsService";
+import { UserProfileService } from "@/services/UserProfileService";
+import UserProfileButton from "@/components/UserProfileButton";
 import { MapPin, Calculator, TrendingUp, Home, Zap, Users, Gift, DollarSign, BarChart3, PiggyBank, Newspaper, LogOut, User, Flag } from "lucide-react";
 import heroImage from "@/assets/hero-canada.jpg";
 import logo from "/lovable-uploads/2db9d8af-7acb-4523-b08a-e7f36f84d542.png";
@@ -28,9 +31,27 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
+  const [realTimeStats, setRealTimeStats] = useState<RealTimeStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
   const { user, signOut } = useAuth();
   const isMobile = useIsMobile();
+
+  // Load real-time statistics
+  useEffect(() => {
+    const loadStats = async () => {
+      setStatsLoading(true);
+      const { data } = await StatisticsService.getEnhancedStatistics();
+      setRealTimeStats(data);
+      setStatsLoading(false);
+    };
+
+    loadStats();
+    
+    // Refresh stats every 5 minutes
+    const interval = setInterval(loadStats, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
@@ -48,11 +69,9 @@ const Index = () => {
               <div className="flex items-center gap-4">
                 {user ? (
                   <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      <span className="hidden sm:inline">{user.email}</span>
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={signOut}>
+                    <span className="hidden sm:inline text-sm text-muted-foreground">Welcome, {user.email}</span>
+                    <UserProfileButton />
+                    <Button variant="ghost" size="sm" onClick={signOut} title="Sign Out">
                       <LogOut className="h-4 w-4" />
                     </Button>
                   </div>
@@ -128,7 +147,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Premium Statistics Section */}
+      {/* Real-Time Statistics Section */}
       <section className="py-24 bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
         <div className="container mx-auto px-4 relative z-10">
@@ -140,12 +159,83 @@ const Index = () => {
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
               Trusted by 
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Millions</span>
+              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"> Thousands</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Comprehensive coverage across Canada with real-time data integration from official government sources
+              Your comprehensive guide to understanding the cost of living across Canada. Make informed decisions about where to live, work, and plan your future.
             </p>
           </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 mb-16">
+            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="pb-6 pt-6 relative z-10">
+                <div className="mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
+                    <MapPin className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
+                  {statsLoading ? "..." : `${realTimeStats?.citiesCovered || 50}+`}
+                </CardTitle>
+                <CardDescription className="text-sm font-medium text-foreground">
+                  Cities Covered
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            
+            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.1s' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="pb-6 pt-6 relative z-10">
+                <div className="mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-gradient-secondary rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
+                    <BarChart3 className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-secondary to-secondary-light bg-clip-text text-transparent">
+                  {statsLoading ? "..." : `${realTimeStats?.dataSources || 15}+`}
+                </CardTitle>
+                <CardDescription className="text-sm font-medium text-foreground">
+                  Data Sources
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            
+            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.2s' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="pb-6 pt-6 relative z-10">
+                <div className="mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
+                    <Users className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <CardTitle className="text-3xl font-bold mb-2 bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
+                  {statsLoading ? "..." : `${Math.floor((realTimeStats?.totalUsers || 12500) / 1000)}K+`}
+                </CardTitle>
+                <CardDescription className="text-sm font-medium text-foreground">
+                  Users Helped
+                </CardDescription>
+              </CardHeader>
+            </Card>
+            
+            <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative" style={{ animationDelay: '0.3s' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-canada-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <CardHeader className="pb-6 pt-6 relative z-10">
+                <div className="mx-auto mb-4 relative">
+                  <div className="w-16 h-16 bg-canada-red rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
+                    <Calculator className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                <CardTitle className="text-3xl font-bold mb-2 text-canada-red">
+                  {statsLoading ? "..." : `${Math.floor((realTimeStats?.totalCalculations || 185000) / 1000)}K+`}
+                </CardTitle>
+                <CardDescription className="text-sm font-medium text-foreground">
+                  Calculations Made
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             <Card className="text-center border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-fade-in overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -157,11 +247,11 @@ const Index = () => {
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-maple-gold rounded-full animate-pulse"></div>
                 </div>
                 <CardTitle className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                  38M+
+                  {statsLoading ? "..." : `${Math.floor((realTimeStats?.activeUsersMonthly || 8200) / 1000)}K+`}
                 </CardTitle>
-                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Canadians Served</CardTitle>
+                <CardTitle className="text-xl mb-4 text-foreground font-semibold">Monthly Active Users</CardTitle>
                 <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Population coverage across all provinces and territories with localized insights
+                  Canadians actively using our tools to make informed housing and financial decisions
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -204,6 +294,14 @@ const Index = () => {
               </CardHeader>
             </Card>
           </div>
+          
+          {realTimeStats && !statsLoading && (
+            <div className="text-center mt-8 opacity-60">
+              <p className="text-sm text-muted-foreground">
+                Last updated: {new Date(realTimeStats.lastUpdated).toLocaleString('en-CA')}
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
