@@ -211,7 +211,7 @@ const Index = () => {
           </div>
           <div className="border-t border-primary-foreground/20 pt-6">
             <p className="text-sm text-primary-foreground/60">
-              © 2024 Canadian Cost of Living Analyzer. Built with ❤️ for Canadians.
+              © 2025 Canadian Cost of Living Analyzer. Built with ❤️ for Canadians.
             </p>
           </div>
         </div>
