@@ -25,35 +25,35 @@ const Index = () => {
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      {/* Enhanced Hero Section */}
+    <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
+      {/* Enhanced Hero Section - Mobile Optimized */}
       <section className="relative overflow-hidden bg-gradient-hero">
         <div className="absolute inset-0 bg-gradient-glow" />
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
-        <div className="relative z-10 container mx-auto px-4 py-24 text-center">
+        <div className="relative z-10 container mx-auto px-4 py-16 md:py-24 text-center">
           <div className="max-w-5xl mx-auto">
-            <div className="flex items-center justify-center mb-8 animate-fade-in">
+            <div className="flex flex-col items-center justify-center mb-6 md:mb-8 animate-fade-in">
               <img 
                 src={logo} 
                 alt="MapleMetrics - Canadian Cost of Living Analysis" 
-                className="h-20 w-20 mr-6 object-contain floating drop-shadow-2xl" 
+                className="h-16 w-16 md:h-20 md:w-20 mb-4 md:mr-6 md:mb-0 object-contain floating drop-shadow-2xl" 
               />
-              <h1 className="text-5xl md:text-7xl font-bold text-primary-foreground text-balance leading-tight">
-                <span className="block gradient-text text-6xl md:text-8xl">MapleMetrics</span>
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-primary-foreground text-balance leading-tight">
+                <span className="block gradient-text text-5xl md:text-6xl lg:text-8xl">MapleMetrics</span>
               </h1>
             </div>
-            <p className="text-xl md:text-2xl text-primary-foreground/90 mb-10 leading-relaxed max-w-4xl mx-auto animate-slide-up">
+            <p className="text-lg md:text-xl lg:text-2xl text-primary-foreground/90 mb-8 md:mb-10 leading-relaxed max-w-4xl mx-auto animate-slide-up px-4">
               Navigate Canada's housing affordability with comprehensive regional analysis. 
               Make informed decisions with <span className="font-semibold text-primary-foreground">real-time government data</span> and expert insights.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center animate-scale-in">
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center animate-scale-in px-4">
               <Button 
                 size="lg" 
                 variant="secondary" 
-                className="shadow-glow hover-lift text-base md:text-lg px-6 md:px-8 py-3 md:py-4 h-auto mobile-button" 
+                className="shadow-glow hover-lift text-base md:text-lg px-6 md:px-8 py-4 h-auto mobile-button mobile-optimized w-full sm:w-auto" 
                 onClick={() => setActiveSection("housing-analyzer")}
               >
                 <Calculator className="h-5 w-5 md:h-6 md:w-6 mr-2 md:mr-3" />
@@ -62,7 +62,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary hover-lift text-base md:text-lg px-6 md:px-8 py-3 md:py-4 h-auto backdrop-blur-sm bg-white/10 mobile-button" 
+                className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary hover-lift text-base md:text-lg px-6 md:px-8 py-4 h-auto backdrop-blur-sm bg-white/10 mobile-button mobile-optimized w-full sm:w-auto" 
                 onClick={() => setActiveSection("benefits-finder")}
               >
                 <Gift className="h-5 w-5 md:h-6 md:w-6 mr-2 md:mr-3" />
@@ -116,14 +116,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Enhanced Navigation Tabs */}
-      <section className="py-12 bg-muted/20 backdrop-blur-sm">
+      {/* Enhanced Navigation Tabs - Mobile Optimized */}
+      <section className="py-16 md:py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h3 className="text-2xl font-semibold text-foreground mb-3">Explore Our Tools</h3>
-            <p className="text-muted-foreground">Choose from our comprehensive suite of financial analysis tools</p>
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 gradient-text">Explore Our Tools</h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Choose from our comprehensive suite of financial analysis tools
+            </p>
           </div>
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          
+          <div className="mobile-grid mb-12 md:mb-16">
             {[
               { id: "market-dashboard", label: "Live Market Data", icon: BarChart3, color: "bg-gradient-primary" },
               { id: "retirement-planner", label: "Retirement Planner", icon: PiggyBank, color: "bg-gradient-secondary" },
@@ -140,15 +143,15 @@ const Index = () => {
                 key={id}
                 variant={activeSection === id ? "default" : "outline"}
                 onClick={() => setActiveSection(id)}
-                className={`shadow-card-custom text-sm hover-lift transition-all duration-300 ${
-                  activeSection === id 
-                    ? `${color} text-white shadow-glow animate-pulse-glow` 
-                    : 'hover:shadow-elegant'
-                } animate-scale-in`}
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`p-4 md:p-6 h-auto flex flex-col items-center gap-3 md:gap-4 group hover-lift animate-fade-in mobile-card mobile-optimized ${
+                  activeSection === id ? 'shadow-glow ring-2 ring-primary ring-offset-2' : ''
+                }`}
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <Icon className="h-5 w-5 mr-2" />
-                {label}
+                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl ${color} flex items-center justify-center group-hover:animate-pulse-glow transition-all duration-300 shadow-lg`}>
+                  <Icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                </div>
+                <span className="text-sm md:text-base font-medium text-center leading-tight">{label}</span>
               </Button>
             ))}
           </div>

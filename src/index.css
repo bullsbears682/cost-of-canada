@@ -134,24 +134,56 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     scroll-behavior: smooth;
-    /* Mobile optimization */
+    /* Enhanced mobile optimization */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     overscroll-behavior: contain;
+    /* Prevent pull-to-refresh on mobile */
+    overscroll-behavior-y: contain;
+    /* Better touch scrolling */
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Mobile touch optimization */
-  button, [role="button"], input, select, textarea {
+  /* Enhanced mobile touch optimization */
+  button, [role="button"], input, select, textarea, a {
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Improved tap targets for mobile */
+  /* Better mobile input handling */
+  input, textarea, select {
+    /* Prevent zoom on focus in iOS */
+    font-size: 16px;
+  }
+
   @media (max-width: 768px) {
-    button, [role="button"], a[role="button"] {
-      min-height: 44px;
-      min-width: 44px;
+    /* Improved tap targets for mobile */
+    button, [role="button"], a[role="button"], .clickable {
+      min-height: 48px;
+      min-width: 48px;
+    }
+
+    /* Better mobile typography */
+    body {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+      overflow-x: hidden;
+    }
+  }
+
+  /* iOS safe area support */
+  @supports (padding: env(safe-area-inset-top)) {
+    .safe-top {
+      padding-top: env(safe-area-inset-top);
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
     }
   }
 }
@@ -195,47 +227,123 @@ All colors MUST be HSL.
     animation: pulse-glow 2s ease-in-out infinite alternate;
   }
 
-  /* Mobile-optimized touch interactions */
-  .touch-manipulation {
-    touch-action: manipulation;
+  /* Mobile-optimized components and animations */
+  .mobile-optimized {
+    @apply touch-manipulation;
     -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
   }
 
+  .mobile-optimized:active {
+    transform: scale(0.98);
+    opacity: 0.8;
+  }
+
+  /* Enhanced mobile cards */
   .mobile-card {
-    @apply bg-card border border-border rounded-lg shadow-card;
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    @apply bg-card border border-border rounded-lg shadow-card touch-manipulation;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .mobile-card:active {
     transform: scale(0.98);
+    box-shadow: 0 2px 8px -2px hsl(var(--primary) / 0.1);
   }
 
   @media (min-width: 768px) {
     .mobile-card:hover {
       @apply shadow-elegant;
+      transform: translateY(-2px);
     }
   }
 
-  /* Scrollable containers with momentum */
+  /* Better mobile buttons */
+  .mobile-button {
+    @apply min-h-[48px] min-w-[48px] touch-manipulation px-4 py-3;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s ease-out;
+  }
+
+  .mobile-button:active {
+    transform: scale(0.96);
+  }
+
+  /* Mobile-optimized form inputs */
+  .mobile-input {
+    @apply min-h-[48px] text-base;
+    /* Prevent zoom on iOS */
+    font-size: 16px;
+  }
+
+  /* Enhanced scrollable containers */
   .scroll-container {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
   }
 
-  /* Mobile-friendly button sizes */
-  .mobile-button {
-    @apply min-h-[44px] min-w-[44px] touch-manipulation;
+  .scroll-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
 
-  /* Loading states optimized for mobile */
+  .scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-container::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  /* Loading animations optimized for mobile */
   .mobile-skeleton {
-    animation: skeleton-loading 1.5s ease-in-out infinite;
+    animation: mobile-skeleton-loading 1.8s ease-in-out infinite;
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--muted-foreground) / 0.1) 50%, hsl(var(--muted)) 75%);
+    background-size: 200% 100%;
   }
 
-  @keyframes skeleton-loading {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
+  @keyframes mobile-skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Mobile-friendly grid layouts */
+  .mobile-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 640px) {
+    .mobile-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+  }
+
+  /* Enhanced mobile navigation */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border safe-bottom;
+    z-index: 50;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-nav {
+      position: static;
+      background: transparent;
+      backdrop-filter: none;
+      border: none;
+    }
   }
 }
 
