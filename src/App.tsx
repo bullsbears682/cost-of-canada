@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import CanadianLoadingScreen from "./components/CanadianLoadingScreen";
-import AdminAccess from "./components/AdminAccess";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./components/AuthPage";
@@ -20,7 +19,6 @@ import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
-import AdminDashboard from "./pages/AdminDashboard";
 import FeedbackWidget from "./components/FeedbackWidget";
 
 const queryClient = new QueryClient();
@@ -56,13 +54,12 @@ const App = () => {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              {/* Admin routes removed */}
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <FeedbackWidget />
-            <AdminAccess onAccessGranted={() => console.log('Admin access granted')} />
+            {/* Admin access removed */}
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
