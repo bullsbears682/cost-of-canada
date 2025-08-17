@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CostComparisonTool } from "@/components/CostComparisonTool";
@@ -26,9 +26,62 @@ import { Link } from "react-router-dom";
 const Index = () => {
   const [activeSection, setActiveSection] = useState("market-dashboard");
   const { demographics, housing, economic, loading, error, lastUpdated, refetch } = useRealData();
+  const { user, signOut, subscription, refreshSubscription } = useAuth();
+
+  // Handle subscription status from URL params
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const subscriptionStatus = urlParams.get('subscription');
+    
+    if (subscriptionStatus === 'success') {
+      setTimeout(() => {
+        refreshSubscription();
+      }, 2000);
+    }
+  }, [refreshSubscription]);
 
   return (
     <div className="min-h-screen bg-gradient-subtle safe-top safe-bottom">
+      {/* Navigation Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="MapleMetrics" className="h-8 w-8 object-contain" />
+              <span className="font-bold text-xl text-foreground">MapleMetrics</span>
+            </div>
+            <div className="flex items-center gap-4">
+              {user ? (
+                <div className="flex items-center gap-3">
+                  {subscription.subscribed && (
+                    <div className="flex items-center gap-2 px-3 py-1 bg-gradient-primary rounded-full text-white text-sm">
+                      <Crown className="h-4 w-4" />
+                      <span>{subscription.subscription_tier}</span>
+                    </div>
+                  )}
+                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="hidden sm:inline">{user.email}</span>
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={signOut}>
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link to="/auth">
+                    <Button variant="ghost" size="sm">Sign In</Button>
+                  </Link>
+                  <Link to="/auth">
+                    <Button size="sm">Get Started</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Premium Hero Section */}
       <section className="relative overflow-hidden bg-gradient-hero min-h-[90vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-glow" />
@@ -192,6 +245,7 @@ const Index = () => {
               { id: "benefits-finder", label: "Benefits Finder", icon: Gift, color: "from-canada-red to-red-600", desc: "Discover government programs" },
               { id: "comparison", label: "City Comparison", icon: MapPin, color: "from-indigo-500 to-indigo-600", desc: "Compare costs between cities" },
               { id: "regional", label: "Regional Overview", icon: TrendingUp, color: "from-teal-500 to-teal-600", desc: "Provincial market insights" },
+              { id: "subscriptions", label: "Premium Plans", icon: Crown, color: "from-gradient-primary", desc: "Unlock advanced features" },
               { id: "news", label: "Economic News", icon: Newspaper, color: "from-gray-600 to-gray-700", desc: "Latest market updates" }
             ].map(({ id, label, icon: Icon, color, desc }, index) => (
               <Card
@@ -248,11 +302,25 @@ const Index = () => {
                 {activeSection === "retirement-planner" && <RetirementPlanningCalculator />}
                 {activeSection === "housing-analyzer" && <HousingAffordabilityAnalyzer />}
                 {activeSection === "salary-calculator" && <SalaryRequirementsCalculator />}
+                {activeSection === "salary-calculator" && !subscription.subscribed && (
+                  <div className="mt-8 p-6 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg">
+                    <p className="text-center text-muted-foreground mb-4">
+                      <Crown className="h-5 w-5 inline mr-2" />
+                      Unlock advanced salary analysis with a premium subscription
+                    </p>
+                    <div className="text-center">
+                      <Button onClick={() => setActiveSection("subscriptions")} className="bg-gradient-primary">
+                        View Plans
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 {activeSection === "utility-optimizer" && <UtilityCostOptimizer />}
                 {activeSection === "total-calculator" && <TotalCostCalculator />}
                 {activeSection === "benefits-finder" && <GovernmentBenefitsFinder />}
                 {activeSection === "comparison" && <CostComparisonTool />}
                 {activeSection === "regional" && <RegionalOverview />}
+                {activeSection === "subscriptions" && <SubscriptionPlans />}
                 {activeSection === "news" && (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2">
@@ -284,6 +352,14 @@ const Index = () => {
                           >
                             <Gift className="h-4 w-4 mr-2" />
                             Find Benefits
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start text-sm h-auto py-2"
+                            onClick={() => setActiveSection("subscriptions")}
+                          >
+                            <Crown className="h-4 w-4 mr-2" />
+                            Premium Plans
                           </Button>
                         </div>
                       </MobileOptimizedCard>
