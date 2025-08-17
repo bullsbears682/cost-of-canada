@@ -2,51 +2,57 @@ import React, { useState, useEffect } from 'react';
 import { Progress } from '@/components/ui/progress';
 
 const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
-  const [progress, setProgress] = useState(0);
   const [buildingStage, setBuildingStage] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        const newProgress = prev + 1; // 1% every 100ms = exactly 10 seconds
-        
-        // Update building stages based on progress - more spread out timing
-        if (newProgress >= 15 && buildingStage === 0) setBuildingStage(1); // Foundation
-        if (newProgress >= 35 && buildingStage === 1) setBuildingStage(2); // Walls
-        if (newProgress >= 55 && buildingStage === 2) setBuildingStage(3); // Roof
-        if (newProgress >= 75 && buildingStage === 3) setBuildingStage(4); // Details
-        if (newProgress >= 90 && buildingStage === 4) setBuildingStage(5); // Complete
-        
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          setTimeout(onComplete, 800); // Slightly longer pause to admire the completed house
-          return 100;
-        }
-        return newProgress;
-      });
-    }, 100); // 100ms interval with 1% increment = exactly 10 seconds
+    const buildingStages = [
+      { stage: 1, delay: 1000, progress: 20 },  // Foundation
+      { stage: 2, delay: 2000, progress: 40 },  // Walls
+      { stage: 3, delay: 1500, progress: 60 },  // Roof
+      { stage: 4, delay: 2000, progress: 80 },  // Details
+      { stage: 5, delay: 1500, progress: 100 }, // Complete
+    ];
 
-    return () => clearInterval(interval);
-  }, [buildingStage, onComplete]);
+    let currentStageIndex = 0;
+    
+    const buildNext = () => {
+      if (currentStageIndex < buildingStages.length) {
+        const currentStage = buildingStages[currentStageIndex];
+        setTimeout(() => {
+          setBuildingStage(currentStage.stage);
+          
+          if (currentStage.stage === 5) {
+            // House is complete, finish loading after a short pause
+            setTimeout(onComplete, 1000);
+          } else {
+            currentStageIndex++;
+            buildNext();
+          }
+        }, currentStage.delay);
+      }
+    };
+
+    // Start building after a short delay
+    setTimeout(buildNext, 500);
+  }, [onComplete]);
+
+  const getProgress = () => {
+    switch (buildingStage) {
+      case 0: return 0;
+      case 1: return 20;
+      case 2: return 40;
+      case 3: return 60;
+      case 4: return 80;
+      case 5: return 100;
+      default: return 0;
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-gradient-hero flex items-center justify-center z-50 touch-manipulation">
       <div className="text-center px-4 max-w-md mx-auto">
-        {/* Logo */}
-        <div className="mb-8 animate-fade-in">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <span className="text-3xl">🍁</span>
-          </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            MapleMetrics
-          </h1>
-          <p className="text-white/80 text-sm md:text-base">
-            Building your cost analysis...
-          </p>
-        </div>
-
         {/* House Building Animation */}
-        <div className="relative w-48 h-32 md:w-64 md:h-40 mx-auto mb-8">
+        <div className="relative w-56 h-40 md:w-72 md:h-48 mx-auto mb-8">
           <svg 
             viewBox="0 0 200 120" 
             className="w-full h-full drop-shadow-lg"
@@ -180,20 +186,19 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           </svg>
         </div>
 
-        {/* Progress Bar */}
+        {/* Progress Bar and Messages */}
         <div className="space-y-4">
           <Progress 
-            value={progress} 
+            value={getProgress()} 
             className="h-2 bg-white/20"
           />
-          <div className="text-white/80 text-sm md:text-base">
-            {progress < 15 && "Preparing the perfect location..."}
-            {progress >= 15 && progress < 35 && "Laying a solid foundation... 🏗️"}
-            {progress >= 35 && progress < 55 && "Raising the walls... 🧱"}
-            {progress >= 55 && progress < 75 && "Installing the roof... 🏠"}
-            {progress >= 75 && progress < 90 && "Adding windows and doors... 🚪"}
-            {progress >= 90 && progress < 100 && "Finishing touches and landscaping... 🌿"}
-            {progress >= 100 && "Your Canadian home is ready! Welcome! 🎉"}
+          <div className="text-white/80 text-sm md:text-base font-medium">
+            {buildingStage === 0 && "Finding the perfect location... 🔍"}
+            {buildingStage === 1 && "Laying a solid foundation... 🏗️"}
+            {buildingStage === 2 && "Raising the walls... 🧱"}
+            {buildingStage === 3 && "Installing the roof... 🏠"}
+            {buildingStage === 4 && "Adding windows and doors... 🚪"}
+            {buildingStage === 5 && "Welcome to your new Canadian home! 🎉"}
           </div>
         </div>
       </div>
