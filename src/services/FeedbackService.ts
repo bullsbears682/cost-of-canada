@@ -19,25 +19,26 @@ export interface FeedbackRecord extends FeedbackData {
 export class FeedbackService {
   static async submitFeedback(data: FeedbackData): Promise<{ success: boolean; error?: string }> {
     try {
-      const { data: user } = await supabase.auth.getUser();
+      // For now, just log feedback since we don't have the feedback table
+      console.log('Feedback submitted:', data);
       
+      // You could store this in localStorage or send to an external service
       const feedbackData = {
-        user_id: user?.user?.id || null,
-        email: data.email || user?.user?.email || null,
+        id: crypto.randomUUID(),
+        user_id: null,
+        email: data.email,
         rating: data.rating,
         category: data.category,
         message: data.message,
-        status: 'new' as const
+        status: 'new' as const,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
-        .from('feedback')
-        .insert([feedbackData]);
-
-      if (error) {
-        console.error('Error submitting feedback:', error);
-        return { success: false, error: error.message };
-      }
+      // Store in localStorage for now
+      const existingFeedback = JSON.parse(localStorage.getItem('app_feedback') || '[]');
+      existingFeedback.push(feedbackData);
+      localStorage.setItem('app_feedback', JSON.stringify(existingFeedback));
 
       return { success: true };
     } catch (error) {
@@ -48,17 +49,9 @@ export class FeedbackService {
 
   static async getFeedbackForUser(): Promise<{ data: FeedbackRecord[] | null; error?: string }> {
     try {
-      const { data, error } = await supabase
-        .from('feedback')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching feedback:', error);
-        return { data: null, error: error.message };
-      }
-
-      return { data };
+      // Get from localStorage for now
+      const feedbackData = JSON.parse(localStorage.getItem('app_feedback') || '[]') as FeedbackRecord[];
+      return { data: feedbackData };
     } catch (error) {
       console.error('Unexpected error fetching feedback:', error);
       return { data: null, error: 'An unexpected error occurred' };
@@ -67,22 +60,9 @@ export class FeedbackService {
 
   static async getAllFeedback(): Promise<{ data: FeedbackRecord[] | null; error?: string }> {
     try {
-      const { data, error } = await supabase
-        .from('feedback')
-        .select(`
-          *,
-          profiles:user_id (
-            display_name
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching all feedback:', error);
-        return { data: null, error: error.message };
-      }
-
-      return { data };
+      // Get from localStorage for now
+      const feedbackData = JSON.parse(localStorage.getItem('app_feedback') || '[]') as FeedbackRecord[];
+      return { data: feedbackData };
     } catch (error) {
       console.error('Unexpected error fetching all feedback:', error);
       return { data: null, error: 'An unexpected error occurred' };
@@ -95,20 +75,20 @@ export class FeedbackService {
     adminNotes?: string
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const updateData: any = { status };
-      if (adminNotes !== undefined) {
-        updateData.admin_notes = adminNotes;
-      }
-
-      const { error } = await supabase
-        .from('feedback')
-        .update(updateData)
-        .eq('id', id);
-
-      if (error) {
-        console.error('Error updating feedback:', error);
-        return { success: false, error: error.message };
-      }
+      // Update in localStorage
+      const existingFeedback = JSON.parse(localStorage.getItem('app_feedback') || '[]') as FeedbackRecord[];
+      const updatedFeedback = existingFeedback.map(item => {
+        if (item.id === id) {
+          return {
+            ...item,
+            status,
+            admin_notes: adminNotes,
+            updated_at: new Date().toISOString()
+          };
+        }
+        return item;
+      });
+      localStorage.setItem('app_feedback', JSON.stringify(updatedFeedback));
 
       return { success: true };
     } catch (error) {

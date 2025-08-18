@@ -19,6 +19,7 @@ import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import AdminDashboard from "./pages/AdminDashboard";
 import FeedbackWidget from "./components/FeedbackWidget";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,8 @@ const App = () => {
               {/* Redirect legacy admin routes to home */}
               <Route path="/admin" element={<Navigate to="/" replace />} />
               <Route path="/admin-dashboard" element={<Navigate to="/" replace />} />
+              {/* Hidden admin route - only accessible via direct URL */}
+              <Route path="/secret-admin-2024" element={<AdminDashboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

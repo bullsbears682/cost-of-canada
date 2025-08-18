@@ -20,53 +20,21 @@ export interface RealTimeStats {
 }
 
 export class StatisticsService {
-  // Get all app statistics
+  // Get all app statistics from localStorage
   static async getAppStatistics(): Promise<{ data: RealTimeStats | null; error?: string }> {
     try {
-      const { data, error } = await supabase
-        .from('app_statistics')
-        .select('*')
-        .order('metric_name');
-
-      if (error) {
-        console.error('Error fetching app statistics:', error);
-        return { data: null, error: error.message };
-      }
-
-      // Transform the data into a more usable format
+      // Get from localStorage for demo purposes
+      const storedStats = localStorage.getItem('app_statistics');
+      const baseStats = storedStats ? JSON.parse(storedStats) : {};
+      
       const stats: RealTimeStats = {
-        totalUsers: 0,
-        totalCalculations: 0,
-        citiesCovered: 50,
-        dataSources: 15,
-        activeUsersMonthly: 0,
-        lastUpdated: new Date().toISOString()
+        totalUsers: baseStats.totalUsers || 0,
+        totalCalculations: baseStats.totalCalculations || 0,
+        citiesCovered: baseStats.citiesCovered || 50,
+        dataSources: baseStats.dataSources || 15,
+        activeUsersMonthly: baseStats.activeUsersMonthly || 0,
+        lastUpdated: baseStats.lastUpdated || new Date().toISOString()
       };
-
-      data?.forEach((stat: AppStatistic) => {
-        switch (stat.metric_name) {
-          case 'total_users':
-            stats.totalUsers = stat.metric_value;
-            break;
-          case 'total_calculations':
-            stats.totalCalculations = stat.metric_value;
-            break;
-          case 'cities_covered':
-            stats.citiesCovered = stat.metric_value;
-            break;
-          case 'data_sources':
-            stats.dataSources = stat.metric_value;
-            break;
-          case 'active_users_monthly':
-            stats.activeUsersMonthly = stat.metric_value;
-            break;
-        }
-        
-        // Use the most recent update time
-        if (stat.last_updated > stats.lastUpdated) {
-          stats.lastUpdated = stat.last_updated;
-        }
-      });
 
       return { data: stats };
     } catch (error) {
@@ -87,32 +55,23 @@ export class StatisticsService {
     };
   }
 
-  // Update a specific statistic (admin only)
+  // Update a specific statistic (admin only) 
   static async updateStatistic(
     metricName: string, 
     value: number, 
     metadata?: Record<string, any>
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const updateData: any = {
-        metric_value: value,
-        last_updated: new Date().toISOString()
-      };
-
+      // Update in localStorage for demo purposes
+      const storedStats = JSON.parse(localStorage.getItem('app_statistics') || '{}');
+      storedStats[metricName] = value;
+      storedStats.lastUpdated = new Date().toISOString();
+      
       if (metadata) {
-        updateData.metadata = metadata;
+        storedStats[`${metricName}_metadata`] = metadata;
       }
-
-      const { error } = await supabase
-        .from('app_statistics')
-        .update(updateData)
-        .eq('metric_name', metricName);
-
-      if (error) {
-        console.error('Error updating statistic:', error);
-        return { success: false, error: error.message };
-      }
-
+      
+      localStorage.setItem('app_statistics', JSON.stringify(storedStats));
       return { success: true };
     } catch (error) {
       console.error('Unexpected error updating statistic:', error);
@@ -123,16 +82,12 @@ export class StatisticsService {
   // Increment a counter statistic
   static async incrementStatistic(metricName: string, increment: number = 1): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await supabase.rpc('increment_statistic', {
-        metric_name: metricName,
-        increment_value: increment
-      });
-
-      if (error) {
-        console.error('Error incrementing statistic:', error);
-        return { success: false, error: error.message };
-      }
-
+      // Update in localStorage for demo purposes
+      const storedStats = JSON.parse(localStorage.getItem('app_statistics') || '{}');
+      storedStats[metricName] = (storedStats[metricName] || 0) + increment;
+      storedStats.lastUpdated = new Date().toISOString();
+      localStorage.setItem('app_statistics', JSON.stringify(storedStats));
+      
       return { success: true };
     } catch (error) {
       console.error('Unexpected error incrementing statistic:', error);

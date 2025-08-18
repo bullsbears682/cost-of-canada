@@ -31,7 +31,7 @@ export const useSwipeGestures = (
   options: SwipeGestureOptions = {}
 ) => {
   const isMobile = useIsMobile();
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const [swipeState, setSwipeState] = useState<SwipeState>({
     isSwiping: false,
