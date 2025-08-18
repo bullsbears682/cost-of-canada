@@ -20,8 +20,8 @@ const AdminDashboard: React.FC = () => {
   const [feedback, setFeedback] = useState<FeedbackRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simple admin check - you can enhance this with proper role-based access
-  const isAdmin = user?.email?.includes('admin') || user?.email?.includes('maplemetrics');
+  // Admin check - only allow specific email
+  const isAdmin = user?.email === 'support@maplemetrics.site';
 
   useEffect(() => {
     const loadData = async () => {
